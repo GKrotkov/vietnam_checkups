@@ -80,6 +80,14 @@ points(var_num_bic, reg.summary$bic[var_num_bic], col = "red", cex = 2, pch = 20
 coef(regfit.full, var_num_bic)
 ```
 
+```{r}
+# glm code
+glm <- glm(as.numeric(RecPerExam) ~ Wstmon + HthyPriority + ComSubsidy,data=data)
+summary(lm)
+par(mfrow=c(2,2))
+plot(lm)
+```
+
 # Results
 
 # Conclusions
