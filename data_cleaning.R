@@ -8,4 +8,6 @@ data$RecPerExam <- factor(data$RecPerExam, levels = c("unknow", "less12",
 
 data <- data[data$RecPerExam != "unknow", ]
 
+# @TODO: filter out respondents whose reason for exam was "work told me to"
+
 save(data, file = "data.rda")
