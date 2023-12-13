@@ -19,7 +19,11 @@ data <- filter(data, ReaExam != "request")
 
 # Introduction
 
-# Data and Exploratory Data Analysis
+# Data
+
+The data was collected by public health researchers in Vietnam in order to determine what obstacles were preventing widespread us of regular check-ups. The researchers conducted interviews in Hanoi and Hung Yen Vietnam and primarily traveled to secondary schools, hospitals, companies, government agencies and randomly selected households in Hanoi. The interviews were in person and lasted about 10-15 minutes. Out of the 2,479 people approached, there were 2,068 valid responses added to the data. 
+
+# Exploratory Data Analysis
 
 ```{r}
 # Is it a waste of Money?
