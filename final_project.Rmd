@@ -23,62 +23,86 @@ data <- filter(data, ReaExam != "request")
 
 The data were collected by public health researchers in Vietnam in order to determine what obstacles were preventing widespread us of regular check-ups. The researchers conducted interviews in Hanoi and Hung Yen Vietnam and primarily traveled to secondary schools, hospitals, companies, government agencies and randomly selected households in Hanoi. The interviews were in person and lasted about 10-15 minutes. Out of the 2,479 people approached, there were 2,068 valid responses added to the data.
 
-The data was cleaned in order to more clearly answer our research questions. First, any instance where the time since last regular check-up was reported as unknown was removed from the data. Additionally, all instances where the check-up was requested by an employer or insurance company was removed.
+The data was cleaned in order to more clearly answer our research questions. First, any instance where the time since someone's last regular check-up was reported as unknown was removed from the data. These responses are removed as someone who's time is unknown could be classified under any other time grouping. Additionally, all instances where the check-up was requested by an employer or insurance company was removed. Removing such entries allows us to narrow our focus to those who are not immediately pressured to get a check-up.
 
 # Exploratory Data Analysis
 
-```{r}
-# Is it a waste of Money?
+```{r, echo=FALSE}
+# Does the respondent believe check-ups are a waste of money?
 barplot1 <-
-    data %>% ggplot(aes(x = Wstmon, y = ..count../sum(..count..), fill = RecPerExam)) +
-    geom_bar(position = 'dodge')
+    data %>% ggplot(aes(x = Wstmon, y = after_stat(count), fill = RecPerExam)) +
+    geom_bar(position = 'dodge') +
+    labs(x="",
+         y="Frequency",
+         title = "Are check-ups a waste\nof money?",
+         fill="Months since\nlast check-up")
 
 # Is the respondent afraid of check-ups because they're afraid of discovering a disease?
 barplot2 <-
-    data %>% ggplot(aes(x = DiscDisease, y = ..count../sum(..count..), fill = RecPerExam)) +
-    geom_bar(position = 'dodge')
+    data %>% ggplot(aes(x = DiscDisease, y = after_stat(count), fill = RecPerExam)) +
+    geom_bar(position = 'dodge') +
+    labs(x="",
+         y="Frequency",
+         title = "Are you afriad of discovering\na new disease?",
+         fill="Months since\nlast check-up")
 
 # Does the respondent have little faith in the quality of medical service?
 barplot3 <-
-    data %>% ggplot(aes(x = Lessbelqual, y = ..count../sum(..count..), fill = RecPerExam)) +
-    geom_bar(position = 'dodge')
+    data %>% ggplot(aes(x = Lessbelqual, y = after_stat(count), fill = RecPerExam)) +
+    geom_bar(position = 'dodge') +
+    labs(x="",
+         y="Frequency",
+         title = "Do you have little faith in\nthe quality of medical\nservice?",
+         fill="Months since\nlast check-up")
 
 # Does the respondent believe check-ups are not urgent or important?
 barplot4 <-
-    data %>% ggplot(aes(x = NotImp, y = ..count../sum(..count..), fill = RecPerExam)) +
-    geom_bar(position = 'dodge')
+    data %>% ggplot(aes(x = NotImp, y = after_stat(count), fill = RecPerExam)) +
+    geom_bar(position = 'dodge') +
+    labs(x="",
+         y="Frequency",
+         title = "Do you believe check-ups are\nnot urgent or important?",
+         fill="Months since\nlast check-up")
 
 # Does the respondent believe health is a first priority?
 barplot5 <-
-    data %>% ggplot(aes(x = HthyPriority, y = ..count../sum(..count..), fill = RecPerExam)) +
-    geom_bar(position = 'dodge')
+    data %>% ggplot(aes(x = HthyPriority, y = after_stat(count), fill = RecPerExam)) +
+    geom_bar(position = 'dodge') +
+    labs(x="",
+         y="Frequency",
+         title = "Do you believe health is a\nfirst priority?",
+         fill="Months since\nlast check-up")
 
 # Are check-ups subsidized by the respondent's employer or community?
 barplot6 <-
-    data %>% ggplot(aes(x = ComSubsidy, y = ..count../sum(..count..), fill = RecPerExam)) +
-    geom_bar(position = 'dodge')
+    data %>% ggplot(aes(x = FlwHealth, y = after_stat(count), fill = RecPerExam)) +
+    geom_bar(position = 'dodge') +
+    labs(x="",
+         y="Frequency",
+         title = "Does you constantly follow updates your health measures?",
+         fill="Months since\nlast check-up")
 
-grid.arrange(barplot1, barplot2, barplot3, barplot4, barplot5, barplot6, ncol=2)
+grid.arrange(barplot1, barplot2, barplot3, barplot4, ncol=2,nrow=2)
+grid.arrange(barplot5, barplot6, ncol=2,nrow=2)
 ```
 
 # Methods
 
-```{r}
+```{r, echo=FALSE}
 # Convert yes/no variables to binary
 data$StabHthStt <- ifelse(data$StabHthStt=="yes",1,0)
-data$Wsttime <- ifelse(data$Wsttime=="yes",1,0)
 data$Wstmon <- ifelse(data$Wstmon=="yes",1,0)
 data$DiscDisease <- ifelse(data$DiscDisease=="yes",1,0)
 data$Lessbelqual <- ifelse(data$Lessbelqual=="yes",1,0)
 data$NotImp <- ifelse(data$NotImp=="yes",1,0)
 data$HthyPriority <- ifelse(data$HthyPriority=="yes",1,0)
-data$ComSubsidy <- ifelse(data$ComSubsidy=="yes",1,0)
+data$FlwHealth <- ifelse(data$FlwHealth=="yes",1,0)
 ```
 
-```{r}
+```{r,echo=FALSE}
 # BIC selection
 num_pred_variables <- 7
-regfit.full <- regsubsets(RecPerExam ~ StabHthStt + Wstmon + DiscDisease + Lessbelqual + HthyPriority + NotImp + ComSubsidy, data = data, nvmax = num_pred_variables, method = "backward")
+regfit.full <- regsubsets(RecPerExam ~ StabHthStt + Wstmon + DiscDisease + Lessbelqual + HthyPriority + NotImp + FlwHealth, data = data, nvmax = num_pred_variables, method = "backward")
 reg.summary <- summary(regfit.full)
 var_num_bic <- which.min(reg.summary$bic)
 plot(reg.summary$bic, xlab = "Number of Variables", ylab = "BIC", type = "l")
@@ -89,9 +113,6 @@ coef(regfit.full, var_num_bic)
 ```{r}
 # glm code
 glm <- glm(as.numeric(RecPerExam) ~ Wstmon + HthyPriority + ComSubsidy,data=data)
-summary(lm)
-par(mfrow=c(2,2))
-plot(lm)
 ```
 
 # Results
