@@ -5,13 +5,68 @@ date: "2023-12-13"
 output: pdf_document
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+theme_set(theme_bw())
+library(gridExtra)
+load("data.rda")
+data <- filter(data, ReaExam != "request")
+```
+
 # Executive Summary
 
 # Introduction
 
 # Data and Exploratory Data Analysis
 
+```{r}
+# Is it a waste of Money?
+barplot1 <-
+    data %>% ggplot(aes(x = Wstmon, y = ..count../sum(..count..), fill = RecPerExam)) +
+    geom_bar(position = 'dodge')
+
+# Is the respondent afraid of check-ups because they're afraid of discovering a disease?
+barplot2 <-
+    data %>% ggplot(aes(x = DiscDisease, y = ..count../sum(..count..), fill = RecPerExam)) +
+    geom_bar(position = 'dodge')
+
+# Does the respondent have little faith in the quality of medical service?
+barplot3 <-
+    data %>% ggplot(aes(x = Lessbelqual, y = ..count../sum(..count..), fill = RecPerExam)) +
+    geom_bar(position = 'dodge')
+
+# Does the respondent believe check-ups are not urgent or important?
+barplot4 <-
+    data %>% ggplot(aes(x = NotImp, y = ..count../sum(..count..), fill = RecPerExam)) +
+    geom_bar(position = 'dodge')
+
+# Does the respondent believe health is a first priority?
+barplot5 <-
+    data %>% ggplot(aes(x = HthyPriority, y = ..count../sum(..count..), fill = RecPerExam)) +
+    geom_bar(position = 'dodge')
+
+# Are check-ups subsidized by the respondent's employer or community?
+barplot6 <-
+    data %>% ggplot(aes(x = ComSubsidy, y = ..count../sum(..count..), fill = RecPerExam)) +
+    geom_bar(position = 'dodge')
+
+grid.arrange(barplot1, barplot2, barplot3, barplot4, barplot5, barplot6, ncol=2)
+```
+
 # Methods
+
+```{r}
+# Convert yes/no variables to binary
+data$StabHthStt <- ifelse(data$StabHthStt=="yes",1,0)
+data$Wsttime <- ifelse(data$Wsttime=="yes",1,0)
+data$Wstmon <- ifelse(data$Wstmon=="yes",1,0)
+data$DiscDisease <- ifelse(data$DiscDisease=="yes",1,0)
+data$Lessbelqual <- ifelse(data$Lessbelqual=="yes",1,0)
+data$NotImp <- ifelse(data$NotImp=="yes",1,0)
+data$HthyPriority <- ifelse(data$HthyPriority=="yes",1,0)
+data$ComSubsidy <- ifelse(data$ComSubsidy=="yes",1,0)
+```
 
 # Results
 
