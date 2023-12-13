@@ -15,7 +15,8 @@ theme_set(theme_bw())
 library(gridExtra)
 data <- read_csv("vietnam-health.csv")
 # code response factor levels
-data$RecPerExam <- factor(data$RecPerExam, levels = c("unknow", "less12", "b1224", "g24"))
+data$RecPerExam <- factor(data$RecPerExam, levels = c("unknow", "less12", 
+                                                      "b1224", "g24"))
 ```
 
 \newpage
