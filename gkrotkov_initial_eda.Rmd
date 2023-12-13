@@ -13,10 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 theme_set(theme_bw())
 library(gridExtra)
-data <- read_csv("vietnam-health.csv")
-# code response factor levels
-data$RecPerExam <- factor(data$RecPerExam, levels = c("unknow", "less12", 
-                                                      "b1224", "g24"))
+load("data.rda")
 ```
 
 \newpage
@@ -24,6 +21,8 @@ data$RecPerExam <- factor(data$RecPerExam, levels = c("unknow", "less12",
 # Data
 
 The data are survey responses from the cities of Hanoi and Hung Yen, Vietnam focused on "secondary schools, hospitals, companies, government agencies and randomly selected households"
+
+For two of the key research questions in this report, the variable we will choose as the response variable is `RecPerExam`, a measure of how long it has been since the respondent last had a checkup *without* a catalyzing health event motivating them to go to the doctor. For this variable, 516 of the 2068 respondents had a value of `unknown`. There are many possible explanations for not knowing how long it has been since your most recent personal checkup, some of which cut against each other when it comes to interpreting the analysis. For example, if a respondent reported "unknown" because it has been so long they cannot remember, that has a very different impact on what inferences we should draw about that respondent than if they reported "unknown" because they were unsure if it was 11 months ago or 12 months ago. Since we don't have any additional information about the reasoning behind the `unknown` status, we will remove all respondents who reported `unkown` from the dataset for the remainder of the analysis.
 
 ## Interpreting 
 
@@ -33,28 +32,35 @@ The data are survey responses from the cities of Hanoi and Hung Yen, Vietnam foc
 
 ```{r}
 suff_plot <- ggplot(data, aes(x = SuffInfo)) + 
-    geom_bar(fill = "purple") + 
+    geom_bar(fill = "purple", color = "black") + 
     labs(title = "Sufficiency Ratings", 
          x = "Information Sufficiency")
 
 attract_plot <- ggplot(data, aes(x = AttractInfo)) + 
-    geom_bar(fill = "purple") + 
+    geom_bar(fill = "purple", color = "black") + 
     labs(title = "Attractiveness Ratings", 
          x = "Information Attractiveness")
 
 impress_plot <- ggplot(data, aes(x = ImpressInfo)) + 
-    geom_bar(fill = "purple") + 
+    geom_bar(fill = "purple", color = "black") + 
     labs(title = "Impressiveness Ratings", 
          x = "Information Impresiveness")
 
 popular_plot <- ggplot(data, aes(x = PopularInfo)) + 
-    geom_bar(fill = "purple") + 
+    geom_bar(fill = "purple", color = "black") + 
     labs(title = "Popularity Ratings", 
          x = "Information Popularity")
 
+avg_plot <- ggplot(data, aes(x = (SuffInfo + AttractInfo + 
+                                      ImpressInfo + PopularInfo) / 4)) + 
+    geom_histogram(bins = 12, fill = "purple", color = "black") + 
+    labs(title = "Average plot", 
+         x = "Avg Info Rating")
 
 grid.arrange(suff_plot, attract_plot, impress_plot, popular_plot, 
              nrow = 2)
+
+avg_plot
 
 tukey_summaries <- rbind(quantile(data$SuffInfo), quantile(data$AttractInfo), 
                          quantile(data$ImpressInfo), quantile(data$PopularInfo))
@@ -70,22 +76,22 @@ We will also explore some metrics of checkup quality to get an indicator for how
 
 ```{r}
 reliability_plot <- ggplot(data, aes(x = Reliability)) + 
-    geom_bar(fill = "purple") + 
+    geom_bar(fill = "purple", color = "black") + 
     labs(title = "Reliability Rating", 
          x = "Reliability")
 
 assurance_plot <- ggplot(data, aes(x = Assurance)) + 
-    geom_bar(fill = "purple") + 
+    geom_bar(fill = "purple", color = "black") + 
     labs(title = "Assurance Rating", 
          x = "Assurance")
 
 empathy_plot <- ggplot(data, aes(x = Empathy)) + 
-    geom_bar(fill = "purple") + 
+    geom_bar(fill = "purple", color = "black") + 
     labs(title = "Empathy Rating", 
          x = "Empathy")
 
 tangibles_plot <- ggplot(data, aes(x = Tangibles)) + 
-    geom_bar(fill = "purple") + 
+    geom_bar(fill = "purple", color = "black") + 
     labs(title = "Tangibles Rating", 
          x = "Tangibles")
 
@@ -93,7 +99,7 @@ grid.arrange(reliability_plot, assurance_plot, empathy_plot, tangibles_plot,
              nrow = 2)
 ```
 
-For key metrics of care qualtiy, we can see that on average patients rate their care reasonably highly. There is clear leftward skew in each of the plots, and ratings of 1 and 2 are relatively rare. It seems like the performance metric with the most opportunity for the Ministry to improve is `empathy`, since while a very high number of patients gave a score of 5/5, the combined count for scores 1/5 and 2/5 is the highest of the variables we consider here.
+For key metrics of care quality, we can see that on average patients rate their care reasonably highly. There is clear leftward skew in each of the plots, and ratings of 1 and 2 are relatively rare. It seems like the performance metric with the most opportunity for the Ministry to improve is `empathy`, since while a very high number of patients gave a score of 5/5, the combined count for scores 1/5 and 2/5 is the highest of the variables we consider here.
 
 ## Factors Influencing Checkup Consistency
 
