@@ -21,7 +21,9 @@ data <- filter(data, ReaExam != "request")
 
 # Data
 
-The data was collected by public health researchers in Vietnam in order to determine what obstacles were preventing widespread us of regular check-ups. The researchers conducted interviews in Hanoi and Hung Yen Vietnam and primarily traveled to secondary schools, hospitals, companies, government agencies and randomly selected households in Hanoi. The interviews were in person and lasted about 10-15 minutes. Out of the 2,479 people approached, there were 2,068 valid responses added to the data. 
+The data were collected by public health researchers in Vietnam in order to determine what obstacles were preventing widespread us of regular check-ups. The researchers conducted interviews in Hanoi and Hung Yen Vietnam and primarily traveled to secondary schools, hospitals, companies, government agencies and randomly selected households in Hanoi. The interviews were in person and lasted about 10-15 minutes. Out of the 2,479 people approached, there were 2,068 valid responses added to the data.
+
+The data was cleaned in order to more clearly answer our research questions. First, any instance where the time since last regular check-up was reported as unknown was removed from the data. Additionally, all instances where the check-up was requested by an employer or insurance company was removed.
 
 # Exploratory Data Analysis
 
