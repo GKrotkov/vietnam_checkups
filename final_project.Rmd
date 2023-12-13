@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 theme_set(theme_bw())
 library(gridExtra)
+library(leaps)
 load("data.rda")
 data <- filter(data, ReaExam != "request")
 ```
@@ -66,6 +67,17 @@ data$Lessbelqual <- ifelse(data$Lessbelqual=="yes",1,0)
 data$NotImp <- ifelse(data$NotImp=="yes",1,0)
 data$HthyPriority <- ifelse(data$HthyPriority=="yes",1,0)
 data$ComSubsidy <- ifelse(data$ComSubsidy=="yes",1,0)
+```
+
+```{r}
+# BIC selection
+num_pred_variables <- 7
+regfit.full <- regsubsets(RecPerExam ~ StabHthStt + Wstmon + DiscDisease + Lessbelqual + HthyPriority + NotImp + ComSubsidy, data = data, nvmax = num_pred_variables, method = "backward")
+reg.summary <- summary(regfit.full)
+var_num_bic <- which.min(reg.summary$bic)
+plot(reg.summary$bic, xlab = "Number of Variables", ylab = "BIC", type = "l")
+points(var_num_bic, reg.summary$bic[var_num_bic], col = "red", cex = 2, pch = 20)
+coef(regfit.full, var_num_bic)
 ```
 
 # Results
