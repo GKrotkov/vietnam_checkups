@@ -36,35 +36,28 @@ As part of the data cleaning, we removed all respondents whose reason for gettin
 To answer the Ministry's first research question, we can investigate respondents' ratings of key information features visually.
 
 ```{r}
-suff_plot <- ggplot(data, aes(x = SuffInfo)) + 
-    geom_bar(fill = "purple", color = "black") + 
-    labs(title = "Sufficiency Ratings", 
-         x = "Information Sufficiency")
+data$info_avg <- (data$SuffInfo + data$AttractInfo + 
+    data$ImpressInfo + data$PopularInfo) / 4
+cidx <- which(colnames(data) %in% c("SuffInfo", "AttractInfo", 
+                                    "ImpressInfo", "PopularInfo", "info_avg"))
 
-attract_plot <- ggplot(data, aes(x = AttractInfo)) + 
-    geom_bar(fill = "purple", color = "black") + 
-    labs(title = "Attractiveness Ratings", 
-         x = "Information Attractiveness")
+info <- melt(data[, cidx])
+info$variable <- factor(info$variable, 
+                        levels = c("SuffInfo", "AttractInfo", "ImpressInfo", 
+                                   "PopularInfo", "info_avg"),
+                        labels = c("Sufficiency", "Attractiveness", 
+                                   "Impressiveness", "Popularity", 
+                                   "Avg Rating"))
 
-impress_plot <- ggplot(data, aes(x = ImpressInfo)) + 
-    geom_bar(fill = "purple", color = "black") + 
-    labs(title = "Impressiveness Ratings", 
-         x = "Information Impresiveness")
-
-popular_plot <- ggplot(data, aes(x = PopularInfo)) + 
-    geom_bar(fill = "purple", color = "black") + 
-    labs(title = "Popularity Ratings", 
-         x = "Information Popularity")
-
-grid.arrange(suff_plot, attract_plot, impress_plot, popular_plot, 
-             nrow = 2)
-
-rm(suff_plot, attract_plot, impress_plot, popular_plot)
+ggplot(info, aes(x = value, color = variable)) + 
+    geom_density(alpha = 0.3, bw = 0.35) + 
+    labs(title = "Information Types Have Very Similar Distributions", 
+         x = "Information Type", y = "Density")
 ```
 
-People tend to rate the Sufficiency, Attractiveness, Impressiveness, and Popularity of information received from checkups at a 3/5 on average, with a similar distribution for each variable. For Attractiveness in particular there appears to be a slight asymmetry (with 2/5 getting nearly as high a rating as 3/5), but in general the four plots all agree on the distribution of the response.
+People tend to rate the Sufficiency, Attractiveness, Impressiveness, and Popularity of information received from checkups at a 3/5 on average, with a similar distribution for each variable. Sufficiency in particular appears to slightly deviate from the rest of the distributions, 
 
-```{r, fig.height = 3}
+```{r}
 summ_stat <- data.frame(mean = c(mean(data$SuffInfo), 
                                  mean(data$AttractInfo), 
                                  mean(data$ImpressInfo), 
@@ -80,24 +73,14 @@ knitr::kable(summ_stat)
 cidx <- which(colnames(data) %in% c("SuffInfo", "AttractInfo", 
                                     "ImpressInfo", "PopularInfo"))
 
-sd_scores <- apply(data[, cidx], MARGIN = 1, sd)
-
-avg_plot <- ggplot(data, aes(x = (SuffInfo + AttractInfo + 
-                                      ImpressInfo + PopularInfo) / 4)) + 
-    geom_histogram(bins = 8, fill = "purple", color = "black") + 
-    labs(title = "Average plot", 
-         subtitle = "Across Info Metrics",
-         x = "Avg Info Rating")
-
-sd_info_plot <- ggplot(data.frame(sd_scores), aes(x = sd_scores)) + 
+ggplot(data.frame(apply(data[, cidx], MARGIN = 1, sd)), 
+       aes(x = sd_scores)) + 
     geom_histogram(bins = 8, fill = "purple", color = "black") + 
     labs(title = "Respondent Standard Deviation",
          subtitle = "Across Info Metrics",
          x = "Respondent Standard Deviation", y = "Count")
 
-grid.arrange(avg_plot, sd_info_plot, nrow = 1)
-
-rm(avg_plot, sd_info_plot, summ_stat)
+rm(summ_stat)
 ```
 
 We can also see from the table of summary statistics that the means and standard deviations of the variables are nearly identical. This indicates in general that the average respondent is generally either pleased or not pleased with the information given to them in a checkup, and doesn't tend to distinguish between the Sufficiency, Attractiveness, Impressiveness or Popularity of the information. To further bolster this point, the average standard deviation of the respondent's scores across each information metric is a very right skewed and left centered metric, indicating that respondents' scores do not vary much across the different metrics. Taken together with the close matching of the average metric plot and the Information Impressiveness plot, it is a safe simplification to use Information Impressiveness as a proxy for the respondent's overall satisfaction with information provided at a checkup.
@@ -105,12 +88,12 @@ We can also see from the table of summary statistics that the means and standard
 We will also explore some metrics of checkup quality to get an indicator for how quality current checkups are, as per the Ministry's questions.
 
 ```{r}
-cidx <- which(colnames(data) %in% c("Tangibles", "Reliability", "Respon", 
+cidx <- which(colnames(data) %in% c("Tangibles", "Reliability", "Timeliness", 
                                     "Assurance", "Empathy"))
 quality <- melt(data[, cidx])
 
 ggplot(quality, aes(x = value, fill = variable)) + 
-    geom_density(alpha = 0.3) + 
+    geom_density(alpha = 0.5, bw = 0.35) + 
     facet_wrap(~variable)
 ```
 
