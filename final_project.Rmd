@@ -140,67 +140,102 @@ rm(quality)
 
 ## What Drives Voluntary Checkups?
 
-Each response includes the several yes or no questions asking what each person feels about check-ups. For example, Does the respondent believe check-ups are a waste of time? In several cases,
+Each response includes the several yes or no questions asking what each person feels about check-ups. For example, "Does the respondent believe check-ups are a waste of time?" In several cases,
 
-```{r, echo=FALSE}
+```{r, fig.height = 8, echo=FALSE}
 # Does the respondent believe check-ups are a waste of time?
 barplot1 <-
-    data %>% ggplot(aes(x = Wsttime, y = after_stat(count), fill = RecPerExam)) +
+    data %>% ggplot(aes(x = Wsttime, y = after_stat(count), 
+                        fill = RecPerExam)) +
     geom_bar(position = 'dodge') +
-    labs(x="",
+    labs(x="Response",
          y="Frequency",
-         title = "Are check-ups a waste\nof time?",
-         fill="Months since\nlast check-up")
+         title = "Are check-ups a waste of time?",
+         fill="Months since\nlast check-up", 
+         caption = fig_cap("Time Waste"))
 
-# Is the respondent afraid of check-ups because they're afraid of discovering a disease?
+# Is the respondent afraid of discovering a disease at a checkup?
 barplot2 <-
-    data %>% ggplot(aes(x = DiscDisease, y = after_stat(count), fill = RecPerExam)) +
+    data %>% ggplot(aes(x = DiscDisease, y = after_stat(count), 
+                        fill = RecPerExam)) +
     geom_bar(position = 'dodge') +
-    labs(x="",
+    labs(x="Response",
          y="Frequency",
-         title = "Are you afriad of discovering\na new disease?",
-         fill="Months since\nlast check-up")
+         title = "Are you afriad of discovering a\nnew disease?",
+         fill="Months since\nlast check-up", 
+         caption = fig_cap("Discovering Disease"))
 
 # Does the respondent have little faith in the quality of medical service?
 barplot3 <-
-    data %>% ggplot(aes(x = Lessbelqual, y = after_stat(count), fill = RecPerExam)) +
+    data %>% ggplot(aes(x = Lessbelqual, y = after_stat(count), 
+                        fill = RecPerExam)) +
     geom_bar(position = 'dodge') +
-    labs(x="",
+    labs(x="Response",
          y="Frequency",
-         title = "Do you have little faith in\nthe quality of medical\nservice?",
-         fill="Months since\nlast check-up")
+         title = "Do you have little faith in the\nquality of medical service?",
+         fill="Months since\nlast check-up", 
+         caption = fig_cap("Low Faith in Quality"))
 
 # Does the respondent believe check-ups are not urgent or important?
 barplot4 <-
-    data %>% ggplot(aes(x = NotImp, y = after_stat(count), fill = RecPerExam)) +
+    data %>% ggplot(aes(x = NotImp, y = after_stat(count), 
+                        fill = RecPerExam)) +
     geom_bar(position = 'dodge') +
-    labs(x="",
+    labs(x="Response",
          y="Frequency",
          title = "Do you believe check-ups are\nnot urgent or important?",
-         fill="Months since\nlast check-up")
+         fill="Months since\nlast check-up", 
+         caption = fig_cap("Inurgency"))
 
 # Does the respondent believe health is a first priority?
 barplot5 <-
-    data %>% ggplot(aes(x = HthyPriority, y = after_stat(count), fill = RecPerExam)) +
+    data %>% ggplot(aes(x = HthyPriority, y = after_stat(count), 
+                        fill = RecPerExam)) +
     geom_bar(position = 'dodge') +
-    labs(x="",
+    labs(x="Response",
          y="Frequency",
          title = "Do you believe health is a\nfirst priority?",
-         fill="Months since\nlast check-up")
+         fill="Months since\nlast check-up", 
+         caption = fig_cap("Low priority on health"))
+
+# Do they follow health updates?
+barplot6 <-
+    data %>% ggplot(aes(x = FlwHealth, y = after_stat(count), 
+                        fill = RecPerExam)) +
+    geom_bar(position = 'dodge') +
+    labs(x="Response",
+         y="Frequency",
+         title = "Does you follow health updates?",
+         fill="Months since\nlast check-up", 
+         caption = fig_cap("Updates"))
+
+# Does the respondent have health insurance?
+barplot7 <-
+    data %>% ggplot(aes(x = HealthIns, y = after_stat(count), 
+                        fill = RecPerExam)) +
+    geom_bar(position = 'dodge') +
+    labs(x="Response",
+         y="Frequency",
+         title = "Do you have health insurance?",
+         fill="Months since\nlast check-up", 
+         caption = fig_cap("Insurance"))
 
 # Are check-ups subsidized by the respondent's employer or community?
-barplot6 <-
-    data %>% ggplot(aes(x = FlwHealth, y = after_stat(count), fill = RecPerExam)) +
+barplot8 <-
+    data %>% ggplot(aes(x = ComSubsidy, y = after_stat(count), 
+                        fill = RecPerExam)) +
     geom_bar(position = 'dodge') +
-    labs(x="",
+    labs(x="Response",
          y="Frequency",
-         title = "Does you constantly follow\nupdates your health measures?",
-         fill="Months since\nlast check-up")
+         title = "Are check-ups subsidized?",
+         fill="Months since\nlast check-up", 
+         caption = fig_cap("Subsidy"))
 
-grid.arrange(barplot1, barplot2, barplot3, barplot4, ncol=2,nrow=2)
-grid.arrange(barplot5, barplot6, ncol=2,nrow=2)
+grid.arrange(barplot1, barplot2, barplot3, barplot4, barplot5, barplot6, 
+             barplot7, barplot8, ncol=2,nrow=4)
 
-rm(barplot1, barplot2, barplot3, barplot4, barplot5, barplot6)
+rm(barplot1, barplot2, barplot3, barplot4, 
+   barplot5, barplot6, barplot7, barplot8)
 ```
 
 ## Impact of Health Status
@@ -218,7 +253,7 @@ From the mosaic plot, it appears that health issues among the respondants and th
 
 # Methods
 
-Two GLMs are built. One model is the model-selected-by-BIC one that tells the health ministry which variables drive what they want. The second model then includes many more variables to control variance so that we can tell the ministry *how much* each covariate influences the result. The response variable for both models is `RecPerExam`. The first model that selects variables using BIC initially considers eighteen variables all discussed in the EDA. The model with lowest BIC value is built as a GLM. The second model uses all of the variables from the first model along with additional variables thought to be important in the EDA. This is to see if adjusting for variance is important when using a BIC selected model. Both models will be compared via a partial F-test to determine the best fit for what the Deputy Assistant Minister is looking for.
+Two GLMs are built. One model is the model-selected-by-BIC one that tells the health ministry which variables drive what they want. The second model then includes many more variables to control variance so that we can tell the ministry *how much* each covariate influences the result. The response variable for both models is `RecPerExam`. The first model that selects variables using BIC initially considers eighteen variables all discussed in the EDA. The model with lowest BIC value is built as a GLM. The second model uses all of the variables from the first model along with additional variables likely to help control variance based on our EDA. Both models will be compared via a partial F-test to determine the best fit for what the Deputy Assistant Minister is looking for.
 
 ```{r, echo=FALSE}
 # Convert yes/no variables to binary
@@ -263,17 +298,21 @@ regfit.full <- regsubsets(RecPerExam ~
 reg.summary <- summary(regfit.full)
 var_num_bic <- which.min(reg.summary$bic)
 plot(reg.summary$bic, xlab = "Number of Variables", ylab = "BIC", type = "l")
-points(var_num_bic, reg.summary$bic[var_num_bic], col = "red", cex = 2, pch = 20)
+points(var_num_bic, reg.summary$bic[var_num_bic], 
+       col = "red", cex = 2, pch = 20)
 coef(regfit.full, var_num_bic)
 ```
 
 ```{r}
 # Final model with BIC
-glm <- glm(as.numeric(RecPerExam) ~ Wsttime + NotImp + HthyPriority + ComSubsidy + Habit,data=data)
+glm <- glm(as.numeric(RecPerExam) ~ Wsttime + NotImp + HthyPriority + 
+               ComSubsidy + Habit,data=data)
 summary(glm)
 par(mfrow=c(2,2))
 plot(glm)
 ```
+
+Furthermore, in order to test the Deputy Assistant Minister's hypothesis, we fit another model that interacted every predictive term with Health Status (and included the main effects) and compared this model against the BIC-selected model using a partial F-Test. This provides a direct comparison of a model that obeys the Deputy Assistant Minister's hypothesis against our baseline model to see if one improves on the other. @TODO do this procedure.
 
 # Results
 
@@ -287,6 +326,6 @@ For key metrics of care quality, we can see from Figure 3 that on average patien
 
 @TODO write our response to Q2
 
-@TODO write out response to Q3
+In figure 12 we can see that the distribution of Health Status and Personal Exam Recency appear to closely follow what we would expect just based on the marginal distribution, indicating it is unlikely that these variables are related. To further our argument that Personal Exam Recency does not appear to depend on Health Status, despite the main effect of Health Status being included in the full model tested using BIC, our model selection procedure did not retain the effect, indicating that it had less predictive power than it was worth as an additional variable. However, to be precise, the Deputy Minister's claim was that the *effect of other factors* was dependent on Health Status. To test this hypothesis, we fit another model that interacted every predictive term with Health Status and compared this model against the BIC-selected model using a partial F-Test. @TODO do this procedure and report results.
 
 # Conclusions
