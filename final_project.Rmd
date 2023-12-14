@@ -5,18 +5,21 @@ date: "2023-12-13"
 output: pdf_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+```{r setup, include=FALSE, message = FALSE, warning = FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 library(tidyverse)
 theme_set(theme_bw())
 library(gridExtra)
 library(leaps)
+library(reshape2)
 load("data.rda")
 ```
 
 # Executive Summary
 
 # Introduction
+
+@TODO Clearly outline the Ministry's research questions
 
 # Data
 
@@ -29,6 +32,8 @@ As part of the data cleaning, we removed all respondents whose reason for gettin
 # Exploratory Data Analysis
 
 ## Information Ratings
+
+To answer the Ministry's first research question, we can investigate respondents' ratings of key information features visually.
 
 ```{r}
 suff_plot <- ggplot(data, aes(x = SuffInfo)) + 
@@ -51,55 +56,62 @@ popular_plot <- ggplot(data, aes(x = PopularInfo)) +
     labs(title = "Popularity Ratings", 
          x = "Information Popularity")
 
-avg_plot <- ggplot(data, aes(x = (SuffInfo + AttractInfo + 
-                                      ImpressInfo + PopularInfo) / 4)) + 
-    geom_histogram(bins = 12, fill = "purple", color = "black") + 
-    labs(title = "Average plot", 
-         x = "Avg Info Rating")
-
 grid.arrange(suff_plot, attract_plot, impress_plot, popular_plot, 
              nrow = 2)
 
-avg_plot
-
-tukey_summaries <- rbind(quantile(data$SuffInfo), quantile(data$AttractInfo), 
-                         quantile(data$ImpressInfo), quantile(data$PopularInfo))
-rownames(tukey_summaries) <- c("Sufficiency", "Attractiveness", 
-                               "Impressiveness", "Popularity")
-
-knitr::kable(tukey_summaries)
-
-info_cidx <- which(colnames(data) %in% c("SuffInfo", "AttractInfo", 
-                                         "ImpressInfo", "PopularInfo"))
+rm(suff_plot, attract_plot, impress_plot, popular_plot)
 ```
 
-People tend to rate the Sufficiency, Attractiveness, Impressiveness, and Popularity of information received from checkups at a 3/5 on average, with a similar distribution for each variable. For Attractiveness in particular there appears to be a slight asymmetry (with 2/5 getting nearly as high a rating as 3/5), but in general the four plots all agree on the distribution of the response. We can also see from the table of quantiles that the 5-number summaries for all the variables are identical. 
+People tend to rate the Sufficiency, Attractiveness, Impressiveness, and Popularity of information received from checkups at a 3/5 on average, with a similar distribution for each variable. For Attractiveness in particular there appears to be a slight asymmetry (with 2/5 getting nearly as high a rating as 3/5), but in general the four plots all agree on the distribution of the response.
 
-We will also explore some metrics of checkup quality to get an indicator for how quality current checkups are.
+```{r, fig.height = 3}
+summ_stat <- data.frame(mean = c(mean(data$SuffInfo), 
+                                 mean(data$AttractInfo), 
+                                 mean(data$ImpressInfo), 
+                                 mean(data$PopularInfo)), 
+                        stdev = c(sd(data$SuffInfo), sd(data$AttractInfo), 
+                                  sd(data$ImpressInfo), sd(data$PopularInfo)))
+
+rownames(summ_stat) <- c("Sufficiency", "Attractiveness", 
+                         "Impressiveness", "Popularity")
+
+knitr::kable(summ_stat)
+
+cidx <- which(colnames(data) %in% c("SuffInfo", "AttractInfo", 
+                                    "ImpressInfo", "PopularInfo"))
+
+sd_scores <- apply(data[, cidx], MARGIN = 1, sd)
+
+avg_plot <- ggplot(data, aes(x = (SuffInfo + AttractInfo + 
+                                      ImpressInfo + PopularInfo) / 4)) + 
+    geom_histogram(bins = 8, fill = "purple", color = "black") + 
+    labs(title = "Average plot", 
+         subtitle = "Across Info Metrics",
+         x = "Avg Info Rating")
+
+sd_info_plot <- ggplot(data.frame(sd_scores), aes(x = sd_scores)) + 
+    geom_histogram(bins = 8, fill = "purple", color = "black") + 
+    labs(title = "Respondent Standard Deviation",
+         subtitle = "Across Info Metrics",
+         x = "Respondent Standard Deviation", y = "Count")
+
+grid.arrange(avg_plot, sd_info_plot, nrow = 1)
+
+rm(avg_plot, sd_info_plot, summ_stat)
+```
+
+We can also see from the table of summary statistics that the means and standard deviations of the variables are nearly identical. This indicates in general that the average respondent is generally either pleased or not pleased with the information given to them in a checkup, and doesn't tend to distinguish between the Sufficiency, Attractiveness, Impressiveness or Popularity of the information. To further bolster this point, the average standard deviation of the respondent's scores across each information metric is a very right skewed and left centered metric, indicating that respondents' scores do not vary much across the different metrics. Taken together with the close matching of the average metric plot and the Information Impressiveness plot, it is a safe simplification to use Information Impressiveness as a proxy for the respondent's overall satisfaction with information provided at a checkup.
+
+We will also explore some metrics of checkup quality to get an indicator for how quality current checkups are, as per the Ministry's questions.
 
 ```{r}
-reliability_plot <- ggplot(data, aes(x = Reliability)) + 
-    geom_bar(fill = "purple", color = "black") + 
-    labs(title = "Reliability Rating", 
-         x = "Reliability")
+cidx <- which(colnames(data) %in% c("Tangibles", "Reliability", "Respon", 
+                                    "Assurance", "Empathy"))
+quality <- melt(data[, cidx])
 
-assurance_plot <- ggplot(data, aes(x = Assurance)) + 
-    geom_bar(fill = "purple", color = "black") + 
-    labs(title = "Assurance Rating", 
-         x = "Assurance")
-
-empathy_plot <- ggplot(data, aes(x = Empathy)) + 
-    geom_bar(fill = "purple", color = "black") + 
-    labs(title = "Empathy Rating", 
-         x = "Empathy")
-
-tangibles_plot <- ggplot(data, aes(x = Tangibles)) + 
-    geom_bar(fill = "purple", color = "black") + 
-    labs(title = "Tangibles Rating", 
-         x = "Tangibles")
-
-grid.arrange(reliability_plot, assurance_plot, empathy_plot, tangibles_plot, 
-             nrow = 2)
+ggplot(quality, aes(x = value, fill = variable)) + 
+    geom_density(alpha = 0.3) + 
+    facet_wrap(~variable)
 ```
 
 For key metrics of care quality, we can see that on average patients rate their care reasonably highly. There is clear leftward skew in each of the plots, and ratings of 1 and 2 are relatively rare. It seems like the performance metric with the most opportunity for the Ministry to improve is `empathy`, since while a very high number of patients gave a score of 5/5, the combined count for scores 1/5 and 2/5 is the highest of the variables we consider here.
@@ -161,6 +173,8 @@ barplot6 <-
 
 grid.arrange(barplot1, barplot2, barplot3, barplot4, ncol=2,nrow=2)
 grid.arrange(barplot5, barplot6, ncol=2,nrow=2)
+
+rm(barplot1, barplot2, barplot3, barplot4, barplot5, barplot6)
 ```
 
 # Methods
