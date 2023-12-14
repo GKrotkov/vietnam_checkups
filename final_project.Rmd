@@ -141,13 +141,13 @@ rm(quality)
 ## What Drives Voluntary Checkups?
 
 ```{r, echo=FALSE}
-# Does the respondent believe check-ups are a waste of money?
+# Does the respondent believe check-ups are a waste of time?
 barplot1 <-
-    data %>% ggplot(aes(x = Wstmon, y = after_stat(count), fill = RecPerExam)) +
+    data %>% ggplot(aes(x = Wsttime, y = after_stat(count), fill = RecPerExam)) +
     geom_bar(position = 'dodge') +
     labs(x="",
          y="Frequency",
-         title = "Are check-ups a waste\nof money?",
+         title = "Are check-ups a waste\nof time?",
          fill="Months since\nlast check-up")
 
 # Is the respondent afraid of check-ups because they're afraid of discovering a disease?
@@ -192,7 +192,7 @@ barplot6 <-
     geom_bar(position = 'dodge') +
     labs(x="",
          y="Frequency",
-         title = "Does you constantly follow updates your health measures?",
+         title = "Does you constantly follow\nupdates your health measures?",
          fill="Months since\nlast check-up")
 
 grid.arrange(barplot1, barplot2, barplot3, barplot4, ncol=2,nrow=2)
@@ -216,16 +216,19 @@ From the mosaic plot, it appears that health issues among the respondants and th
 
 # Methods
 
-Idea: build two models, one model is the model-selected-by-BIC one that tells the health ministry which variables drive what they want. The second model then includes many more variables to control variance so that we can tell the ministry *how much* each covariate influences the result.
+Two GLMs are built. One model is the model-selected-by-BIC one that tells the health ministry which variables drive what they want. The second model then includes many more variables to control variance so that we can tell the ministry *how much* each covariate influences the result. The response variable for both models is `RecPerExam`. The first model that selects variables using BIC initially considers eighteen variables all discussed in the EDA. The model with lowest BIC value is built as a GLM. The second model uses all of the variables from the first model along with additional variables thought to be important in the EDA. This is to see if adjusting for variance is important when using a BIC selected model. Both models will be compared via a partial F-test to determine the best fit for what the Deputy Assistant Minister is looking for.
 
 ```{r, echo=FALSE}
 # Convert yes/no variables to binary
 data$StabHthStt <- ifelse(data$StabHthStt=="yes",1,0)
+data$Wsttime <- ifelse(data$Wsttime=="yes",1,0)
 data$Wstmon <- ifelse(data$Wstmon=="yes",1,0)
 data$DiscDisease <- ifelse(data$DiscDisease=="yes",1,0)
 data$Lessbelqual <- ifelse(data$Lessbelqual=="yes",1,0)
 data$NotImp <- ifelse(data$NotImp=="yes",1,0)
 data$HthyPriority <- ifelse(data$HthyPriority=="yes",1,0)
+data$ComSubsidy <- ifelse(data$ComSubsidy=="yes",1,0)
+data$Habit <- ifelse(data$Habit=="yes",1,0)
 data$FlwHealth <- ifelse(data$FlwHealth=="yes",1,0)
 ```
 
