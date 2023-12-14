@@ -35,7 +35,7 @@ As part of the data cleaning, we removed all respondents whose reason for gettin
 
 To answer the Ministry's first research question, we can investigate respondents' ratings of key information features visually.
 
-```{r}
+```{r, fig.height = 4, fig.align='center'}
 data$info_avg <- (data$SuffInfo + data$AttractInfo + 
     data$ImpressInfo + data$PopularInfo) / 4
 cidx <- which(colnames(data) %in% c("SuffInfo", "AttractInfo", 
@@ -58,7 +58,7 @@ ggplot(info, aes(x = value, color = `Info Type`)) +
 rm(info)
 ```
 
-People tend to rate the Sufficiency, Attractiveness, Impressiveness, and Popularity of information received from checkups at a 3/5 on average, with a similar distribution for each variable. Sufficiency in particular appears to slightly deviate from the rest of the distributions, 
+People tend to rate the Sufficiency, Attractiveness, Impressiveness, and Popularity of information received from checkups at a 3/5 on average, with a similar distribution for each variable. Sufficiency in particular appears to slightly deviate from the rest of the distributions, with a slightly lower density at 2/5 and a slightly higher density at 3/5, but overall the ratings clearly vary together. This is supported by the closely matching means and standard deviations of the four variables, shown in the table below.
 
 ```{r}
 summ_stat <- data.frame(mean = c(mean(data$SuffInfo), 
@@ -72,7 +72,11 @@ rownames(summ_stat) <- c("Sufficiency", "Attractiveness",
                          "Impressiveness", "Popularity")
 
 knitr::kable(summ_stat)
+```
 
+We can also get a sense of the extent to which the variables tend to vary together by taking the standard deviation of each respondent's four ratings and plotting those standard deviations.
+
+```{r, fig.height = 3, fig.width = 4, fig.align = 'center'}
 cidx <- which(colnames(data) %in% c("SuffInfo", "AttractInfo", 
                                     "ImpressInfo", "PopularInfo"))
 
@@ -86,7 +90,7 @@ ggplot(data.frame(sd_scores = apply(data[, cidx], MARGIN = 1, sd)),
 rm(summ_stat)
 ```
 
-We can also see from the table of summary statistics that the means and standard deviations of the variables are nearly identical. This indicates in general that the average respondent is generally either pleased or not pleased with the information given to them in a checkup, and doesn't tend to distinguish between the Sufficiency, Attractiveness, Impressiveness or Popularity of the information. To further bolster this point, the average standard deviation of the respondent's scores across each information metric is a very right skewed and left centered metric, indicating that respondents' scores do not vary much across the different metrics. Taken together with the close matching of the average metric plot and the Information Impressiveness plot, it is a safe simplification to use Information Impressiveness as a proxy for the respondent's overall satisfaction with information provided at a checkup.
+This indicates in general that the average respondent is generally either pleased or not pleased with the information given to them in a checkup, and doesn't tend to distinguish between the Sufficiency, Attractiveness, Impressiveness or Popularity of the information. The average standard deviation of the respondent's scores across each information metric is a very right skewed and left centered metric, indicating that respondents' scores do not vary much across the different metrics. Taken together with the close matching of the average metric plot and the Information Impressiveness plot, it is a safe simplification to use Information Impressiveness as a proxy for the respondent's overall satisfaction with information provided at a checkup.
 
 We will also explore some metrics of checkup quality to get an indicator for how quality current checkups are, as per the Ministry's questions.
 
