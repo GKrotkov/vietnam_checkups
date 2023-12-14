@@ -17,20 +17,18 @@ load("data.rda")
 
 # Executive Summary
 
+\newpage
+
 # Introduction
 
-@TODO Clearly outline the Ministry's research questions
+The Ministry of Health ("Ministry" or "the Ministry") seeks to increase public attendance at regular checkups both to improve public health and save money with preventative medicine. To address this problem, Vietnamese public health researchers conducted a survey to gather information about public attitudes around regular checkups. We will use this data to answer critical questions by the Ministry aimed at increasing the number of people getting annual health exams. 
 
-Research questions:
+In particular, we will answer the following questions to guide Ministry policy around regular checkups:
 
-- Overall, how do people rate the attractiveness, impressiveness, sufficiency, and popularity of information they receive in checkups?
-
-- How do people rate attributes, such as assurance, reliability, and empathy, that tell us how well doctors and nurses are doing?
-
-- What make a person less likely to get check-up every twelve months and of these factors which can be used to design advertising for check-ups?
-
-- Do none of these factors matter unless a person has health issues or knows someone in their family with health issues?
-
+1. Overall, how do people rate the attractiveness, impressiveness, sufficiency, and popularity of information they receive in checkups?
+2. How do people rate attributes, such as assurance, reliability, and empathy, that tell us how well doctors and nurses are doing?
+3. What make a person less likely to get check-up every twelve months and of these factors which can be used to design advertising for check-ups?
+4. Do none of these factors matter unless a person has health issues or knows someone in their family with health issues?
 
 # Data
 
