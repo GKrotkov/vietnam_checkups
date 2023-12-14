@@ -21,6 +21,17 @@ load("data.rda")
 
 @TODO Clearly outline the Ministry's research questions
 
+Research questions:
+
+- Overall, how do people rate the attractiveness, impressiveness, sufficiency, and popularity of information they receive in checkups?
+
+- How do people rate attributes, such as assurance, reliability, and empathy, that tell us how well doctors and nurses are doing?
+
+- What make a person less likely to get check-up every twelve months and of these factors which can be used to design advertising for check-ups?
+
+- Do none of these factors matter unless a person has health issues or knows someone in their family with health issues?
+
+
 # Data
 
 The data were collected by public health researchers in Vietnam in order to determine what obstacles were preventing widespread us of regular check-ups. The researchers conducted interviews in Hanoi and Hung Yen Vietnam and primarily traveled to secondary schools, hospitals, companies, government agencies and randomly selected households in Hanoi. The interviews were in person and lasted about 10-15 minutes. Out of the 2,479 people approached, there were 2,068 valid responses added to the data.
@@ -197,8 +208,30 @@ data$FlwHealth <- ifelse(data$FlwHealth=="yes",1,0)
 
 ```{r,echo=FALSE}
 # BIC selection
-num_pred_variables <- 7
-regfit.full <- regsubsets(RecPerExam ~ StabHthStt + Wstmon + DiscDisease + Lessbelqual + HthyPriority + NotImp + FlwHealth, data = data, nvmax = num_pred_variables, method = "backward")
+num_pred_variables <- 18
+regfit.full <- regsubsets(RecPerExam ~
+                            StabHthStt +
+                            BMI +
+                            Wstmon +
+                            Wsttime +
+                            DiscDisease +
+                            Lessbelqual +
+                            NotImp + 
+                            HthyPriority +
+                            ComSubsidy +
+                            Habit + 
+                            FlwHealth +
+                            AttractInfo +
+                            ImpressInfo +
+                            SuffInfo +
+                            PopularInfo +
+                            Assurance +
+                            Reliability + 
+                            Empathy,
+                          data = data,
+                          nvmax = num_pred_variables,
+                          method = "forward")
+
 reg.summary <- summary(regfit.full)
 var_num_bic <- which.min(reg.summary$bic)
 plot(reg.summary$bic, xlab = "Number of Variables", ylab = "BIC", type = "l")
@@ -207,8 +240,11 @@ coef(regfit.full, var_num_bic)
 ```
 
 ```{r}
-# glm code
-glm <- glm(as.numeric(RecPerExam) ~ Wstmon + HthyPriority + ComSubsidy,data=data)
+# Final model with BIC
+glm <- glm(as.numeric(RecPerExam) ~ Wsttime + NotImp + HthyPriority + ComSubsidy + Habit,data=data)
+summary(glm)
+par(mfrow=c(2,2))
+plot(glm)
 ```
 
 # Results
