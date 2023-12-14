@@ -92,6 +92,8 @@ rm(summ_stat)
 
 This indicates in general that the average respondent is generally either pleased or not pleased with the information given to them in a checkup, and doesn't tend to distinguish between the Sufficiency, Attractiveness, Impressiveness or Popularity of the information. The average standard deviation of the respondent's scores across each information metric is a very right skewed and left centered metric, indicating that respondents' scores do not vary much across the different metrics. Taken together with the close matching of the average metric plot and the Information Impressiveness plot, it is a safe simplification to use Information Impressiveness as a proxy for the respondent's overall satisfaction with information provided at a checkup.
 
+## Checkup Quality
+
 We will also explore some metrics of checkup quality to get an indicator for how quality current checkups are, as per the Ministry's questions.
 
 ```{r}
@@ -100,12 +102,20 @@ cidx <- which(colnames(data) %in% c("Tangibles", "Reliability", "Timeliness",
 quality <- melt(data[, cidx])
 colnames(quality) <- c("Rating", "value")
 
+knitr::kable(data.frame(mean = colMeans(data[, cidx]), 
+                        sd = apply(data[, cidx], 2, sd)))
+
+```
+
+```{r}
 ggplot(quality, aes(x = value, fill = Rating)) + 
     geom_density(alpha = 0.6, bw = 0.35) + 
     facet_wrap(~Rating)
 ```
 
-For key metrics of care quality, we can see that on average patients rate their care reasonably highly. There is clear leftward skew in each of the plots, and ratings of 1 and 2 are relatively rare. It seems like the performance metric with the most opportunity for the Ministry to improve is `empathy`, since while a very high number of patients gave a score of 5/5, the combined count for scores 1/5 and 2/5 is the highest of the variables we consider here.
+For key metrics of care quality, we can see that on average patients rate their care reasonably highly. There is clear leftward skew from a high center in each of the plots, and ratings of 1 and 2 are relatively rare. It seems like the performance metric with the most opportunity for the Ministry to improve is `empathy`, since while a very high number of patients gave a score of 5/5, the combined count for scores 1/5 and 2/5 is the highest of the variables we consider here.
+
+## What Drives Voluntary Checkups?
 
 ```{r, echo=FALSE}
 # Does the respondent believe check-ups are a waste of money?
