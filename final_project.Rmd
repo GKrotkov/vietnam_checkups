@@ -59,12 +59,13 @@ info$variable <- factor(info$variable,
                         labels = c("Sufficiency", "Attractiveness", 
                                    "Impressiveness", "Popularity", 
                                    "Avg Rating"))
-colnames(info) <- c("Info Type", "value")
+colnames(info) <- c("Type", "value")
 
-ggplot(info, aes(x = value, color = `Info Type`)) + 
+ggplot(info, aes(x = value, color = Type)) + 
     geom_density(alpha = 0.3, bw = 0.35) + 
     labs(title = "Information Types Have Very Similar Distributions", 
-         x = "Information Type", y = "Density")
+         x = "Rating (1-5 scale)", y = "Density", 
+         caption = "Figure 1: Information Type")
 
 rm(info)
 ```
@@ -82,7 +83,8 @@ summ_stat <- data.frame(mean = c(mean(data$SuffInfo),
 rownames(summ_stat) <- c("Sufficiency", "Attractiveness", 
                          "Impressiveness", "Popularity")
 
-knitr::kable(summ_stat)
+knitr::kable(summ_stat, 
+             caption = "Figure 2: Information Summary Statistics")
 ```
 
 We can also get a sense of the extent to which the variables tend to vary together by taking the standard deviation of each respondent's four ratings and plotting those standard deviations.
@@ -96,7 +98,8 @@ ggplot(data.frame(sd_scores = apply(data[, cidx], MARGIN = 1, sd)),
     geom_histogram(bins = 8, fill = "purple", color = "black") + 
     labs(title = "Respondent Standard Deviation",
          subtitle = "Across Info Metrics",
-         x = "Respondent Standard Deviation", y = "Count")
+         x = "Respondent Standard Deviation", y = "Count", 
+         caption = "Figure 3: Spread between ratings")
 
 rm(summ_stat)
 ```
@@ -105,7 +108,7 @@ This indicates in general that the average respondent is generally either please
 
 ## Checkup Quality
 
-We will also explore some metrics of checkup quality to get an indicator for how quality current checkups are, as per the Ministry's questions.
+We can also explore some metrics of checkup quality to get an indicator for how quality current checkups are, as per the Ministry's questions.
 
 ```{r}
 cidx <- which(colnames(data) %in% c("Tangibles", "Reliability", "Timeliness", 
@@ -114,19 +117,23 @@ quality <- melt(data[, cidx])
 colnames(quality) <- c("Rating", "value")
 
 knitr::kable(data.frame(mean = colMeans(data[, cidx]), 
-                        sd = apply(data[, cidx], 2, sd)))
+                        sd = apply(data[, cidx], 2, sd)), 
+             caption = "Figure 4: Quality Summary Statistics")
 
 ```
 
 ```{r}
 ggplot(quality, aes(x = value, fill = Rating)) + 
     geom_density(alpha = 0.6, bw = 0.35) + 
-    facet_wrap(~Rating)
-
-rm(quality)
+    facet_wrap(~Rating) + 
+    labs(title = "Quality Ratings Distribution", 
+         x = "Rating (1-5)", y = "Density", 
+         caption = "Figure 5: Quality Ratings")
 ```
 
-For key metrics of care quality, we can see that on average patients rate their care reasonably highly. There is clear leftward skew from a high center in each of the plots, and ratings of 1 and 2 are relatively rare. It seems like the performance metric with the most opportunity for the Ministry to improve is `empathy`, since while a very high number of patients gave a score of 5/5, the combined count for scores 1/5 and 2/5 is the highest of the variables we consider here.
+```{r}
+rm(quality)
+```
 
 ## What Drives Voluntary Checkups?
 
@@ -249,7 +256,13 @@ plot(glm)
 
 # Results
 
-@TODO write our response to Q1
+## Information Ratings
+
+Overall, respondents rate the four types of information (attractiveness, impressiveness, sufficiency, and popularity) with approximately the same distribution (see Figure 1); unimodal, centered at around 3 and slightly right skewed, with slightly more respondents responding with 2/5 then 4/5 and slightly more respondents responding with 1/5 than 5/5. It appears that in general, referencing the tight spread of each individual respondent's rating seen in Figure 3, not only does each type of information have the same marginal distribution, but each individual respondent's ratings are tightly clustered. That is, most respondents gave ratings for the four different information types that are very similar to each other.
+
+## Attribute Ratings
+
+For key metrics of care quality, we can see from Figure 5 that on average patients rate their care reasonably highly. There is clear leftward skew from a high center in each of the plots, and ratings of 1 and 2 are relatively rare. It seems like the performance metrics with the most opportunity for the Ministry to improve are Timeliness and Empathy, since while a reasonable number of patients gave a score of 5/5 for these qualities, these two qualities have the highest density of 1/5 and 2/5 ratings, clearly higher than the other three qualities.
 
 @TODO write our response to Q2
 
