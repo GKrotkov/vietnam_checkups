@@ -111,6 +111,8 @@ knitr::kable(data.frame(mean = colMeans(data[, cidx]),
 ggplot(quality, aes(x = value, fill = Rating)) + 
     geom_density(alpha = 0.6, bw = 0.35) + 
     facet_wrap(~Rating)
+
+rm(quality)
 ```
 
 For key metrics of care quality, we can see that on average patients rate their care reasonably highly. There is clear leftward skew from a high center in each of the plots, and ratings of 1 and 2 are relatively rare. It seems like the performance metric with the most opportunity for the Ministry to improve is `empathy`, since while a very high number of patients gave a score of 5/5, the combined count for scores 1/5 and 2/5 is the highest of the variables we consider here.
