@@ -140,6 +140,8 @@ rm(quality)
 
 ## What Drives Voluntary Checkups?
 
+Each response includes the several yes or no questions asking what each person feels about check-ups. For example, Does the respondent believe check-ups are a waste of time? In several cases,
+
 ```{r, echo=FALSE}
 # Does the respondent believe check-ups are a waste of time?
 barplot1 <-
