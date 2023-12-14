@@ -13,6 +13,13 @@ library(gridExtra)
 library(leaps)
 library(reshape2)
 load("data.rda")
+fig_n <- 1
+
+fig_cap <- function(label){
+    cap <- paste0("Figure ", fig_n, ": ", label)
+    fig_n <<- fig_n + 1
+    return(cap)
+}
 ```
 
 # Executive Summary
@@ -63,7 +70,7 @@ ggplot(info, aes(x = value, color = Type)) +
     geom_density(alpha = 0.3, bw = 0.35) + 
     labs(title = "Information Types Have Very Similar Distributions", 
          x = "Rating (1-5 scale)", y = "Density", 
-         caption = "Figure 1: Information Type")
+         caption = fig_cap("Information Type"))
 
 rm(info)
 ```
@@ -81,8 +88,7 @@ summ_stat <- data.frame(mean = c(mean(data$SuffInfo),
 rownames(summ_stat) <- c("Sufficiency", "Attractiveness", 
                          "Impressiveness", "Popularity")
 
-knitr::kable(summ_stat, 
-             caption = "Figure 2: Information Summary Statistics")
+knitr::kable(summ_stat, caption = "Information Summary Statistics")
 ```
 
 We can also get a sense of the extent to which the variables tend to vary together by taking the standard deviation of each respondent's four ratings and plotting those standard deviations.
@@ -97,7 +103,7 @@ ggplot(data.frame(sd_scores = apply(data[, cidx], MARGIN = 1, sd)),
     labs(title = "Respondent Standard Deviation",
          subtitle = "Across Info Metrics",
          x = "Respondent Standard Deviation", y = "Count", 
-         caption = "Figure 3: Spread between ratings")
+         caption = fig_cap("Spread Between Ratings"))
 
 rm(summ_stat)
 ```
@@ -116,8 +122,7 @@ colnames(quality) <- c("Rating", "value")
 
 knitr::kable(data.frame(mean = colMeans(data[, cidx]), 
                         sd = apply(data[, cidx], 2, sd)), 
-             caption = "Figure 4: Quality Summary Statistics")
-
+             caption = "Quality Summary Statistics")
 ```
 
 ```{r}
@@ -126,7 +131,7 @@ ggplot(quality, aes(x = value, fill = Rating)) +
     facet_wrap(~Rating) + 
     labs(title = "Quality Ratings Distribution", 
          x = "Rating (1-5)", y = "Density", 
-         caption = "Figure 5: Quality Ratings")
+         caption = fig_cap("Quality Ratings"))
 ```
 
 ```{r}
@@ -196,6 +201,19 @@ grid.arrange(barplot5, barplot6, ncol=2,nrow=2)
 rm(barplot1, barplot2, barplot3, barplot4, barplot5, barplot6)
 ```
 
+## Impact of Health Status
+
+To investigate the Deputy Assistant Minister's hypothesis, we can make a mosaic plot of the two key variables - `RecPerExam` (how recently the respondent had a regular checkup) and `StabHthStt` (whether the respondent and their family are all in good health.) This type of plot is regularly used to visually inspect whether two categorical variables are independent, and is in that way well suited for this purpose.
+
+```{r}
+mosaicplot(table(data$RecPerExam, data$StabHthStt), shade = TRUE, 
+           main = "Health Status and Personal Exams Appear Independent", 
+           xlab = "Recency of Personal Exam", ylab = "Health Status", 
+           sub = fig_cap("Health Status Impact"))
+```
+
+From the mosaic plot, it appears that health issues among the respondants and their families are not correlated to the response variable. Each cross-section box is approximately the size you would expect based on only the marginal probabilities, and we can see from the coloring using Standardized Pearson Residuals (or lack thereof, rather) that none of the cross sections are significantly greater or lesser than expected. This implies that Health Status and Personal Exam Recency are likely to be independent variables.
+
 # Methods
 
 Idea: build two models, one model is the model-selected-by-BIC one that tells the health ministry which variables drive what they want. The second model then includes many more variables to control variance so that we can tell the ministry *how much* each covariate influences the result.
@@ -256,11 +274,11 @@ plot(glm)
 
 ## Information Ratings
 
-Overall, respondents rate the four types of information (attractiveness, impressiveness, sufficiency, and popularity) with approximately the same distribution (see Figure 1); unimodal, centered at around 3 and slightly right skewed, with slightly more respondents responding with 2/5 then 4/5 and slightly more respondents responding with 1/5 than 5/5. It appears that in general, referencing the tight spread of each individual respondent's rating seen in Figure 3, not only does each type of information have the same marginal distribution, but each individual respondent's ratings are tightly clustered. That is, most respondents gave ratings for the four different information types that are very similar to each other.
+Overall, respondents rate the four types of information (attractiveness, impressiveness, sufficiency, and popularity) with approximately the same distribution (see Figure 1); unimodal, centered at around 3 and slightly right skewed, with slightly more respondents responding with 2/5 then 4/5 and slightly more respondents responding with 1/5 than 5/5. It appears that in general, referencing the tight spread of each individual respondent's rating seen in Figure 2, not only does each type of information have the same marginal distribution, but each individual respondent's ratings are tightly clustered. That is, most respondents gave ratings for the four different information types that are very similar to each other.
 
 ## Attribute Ratings
 
-For key metrics of care quality, we can see from Figure 5 that on average patients rate their care reasonably highly. There is clear leftward skew from a high center in each of the plots, and ratings of 1 and 2 are relatively rare. It seems like the performance metrics with the most opportunity for the Ministry to improve are Timeliness and Empathy, since while a reasonable number of patients gave a score of 5/5 for these qualities, these two qualities have the highest density of 1/5 and 2/5 ratings, clearly higher than the other three qualities.
+For key metrics of care quality, we can see from Figure 3 that on average patients rate their care reasonably highly. There is clear leftward skew from a high center in each of the plots, and ratings of 1 and 2 are relatively rare. It seems like the performance metrics with the most opportunity for the Ministry to improve are Timeliness and Empathy, since while a reasonable number of patients gave a score of 5/5 for these qualities, these two qualities have the highest density of 1/5 and 2/5 ratings, clearly higher than the other three qualities.
 
 @TODO write our response to Q2
 
