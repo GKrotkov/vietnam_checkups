@@ -213,4 +213,10 @@ glm <- glm(as.numeric(RecPerExam) ~ Wstmon + HthyPriority + ComSubsidy,data=data
 
 # Results
 
+@TODO write our response to Q1
+
+@TODO write our response to Q2
+
+@TODO write out response to Q3
+
 # Conclusions
