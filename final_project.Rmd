@@ -48,11 +48,14 @@ info$variable <- factor(info$variable,
                         labels = c("Sufficiency", "Attractiveness", 
                                    "Impressiveness", "Popularity", 
                                    "Avg Rating"))
+colnames(info) <- c("Info Type", "value")
 
-ggplot(info, aes(x = value, color = variable)) + 
+ggplot(info, aes(x = value, color = `Info Type`)) + 
     geom_density(alpha = 0.3, bw = 0.35) + 
     labs(title = "Information Types Have Very Similar Distributions", 
          x = "Information Type", y = "Density")
+
+rm(info)
 ```
 
 People tend to rate the Sufficiency, Attractiveness, Impressiveness, and Popularity of information received from checkups at a 3/5 on average, with a similar distribution for each variable. Sufficiency in particular appears to slightly deviate from the rest of the distributions, 
@@ -73,7 +76,7 @@ knitr::kable(summ_stat)
 cidx <- which(colnames(data) %in% c("SuffInfo", "AttractInfo", 
                                     "ImpressInfo", "PopularInfo"))
 
-ggplot(data.frame(apply(data[, cidx], MARGIN = 1, sd)), 
+ggplot(data.frame(sd_scores = apply(data[, cidx], MARGIN = 1, sd)), 
        aes(x = sd_scores)) + 
     geom_histogram(bins = 8, fill = "purple", color = "black") + 
     labs(title = "Respondent Standard Deviation",
@@ -91,10 +94,11 @@ We will also explore some metrics of checkup quality to get an indicator for how
 cidx <- which(colnames(data) %in% c("Tangibles", "Reliability", "Timeliness", 
                                     "Assurance", "Empathy"))
 quality <- melt(data[, cidx])
+colnames(quality) <- c("Rating", "value")
 
-ggplot(quality, aes(x = value, fill = variable)) + 
-    geom_density(alpha = 0.5, bw = 0.35) + 
-    facet_wrap(~variable)
+ggplot(quality, aes(x = value, fill = Rating)) + 
+    geom_density(alpha = 0.6, bw = 0.35) + 
+    facet_wrap(~Rating)
 ```
 
 For key metrics of care quality, we can see that on average patients rate their care reasonably highly. There is clear leftward skew in each of the plots, and ratings of 1 and 2 are relatively rare. It seems like the performance metric with the most opportunity for the Ministry to improve is `empathy`, since while a very high number of patients gave a score of 5/5, the combined count for scores 1/5 and 2/5 is the highest of the variables we consider here.
@@ -161,6 +165,8 @@ rm(barplot1, barplot2, barplot3, barplot4, barplot5, barplot6)
 ```
 
 # Methods
+
+Idea: build two models, one model is the model-selected-by-BIC one that tells the health ministry which variables drive what they want. The second model then includes many more variables to control variance so that we can tell the ministry *how much* each covariate influences the result.
 
 ```{r, echo=FALSE}
 # Convert yes/no variables to binary
