@@ -2,12 +2,12 @@ library(tidyverse)
 
 raw <- read_csv("vietnam-health.csv")
 data <- raw
-# code response factor levels
-data$RecPerExam <- factor(data$RecPerExam, levels = c("unknow", "less12", 
-                                                      "b1224", "g24"))
-
+# filter out some values
 data <- data[data$RecPerExam != "unknow", ]
-
-# @TODO: filter out respondents whose reason for exam was "work told me to"
+data <- data[data$ReaExam != "request", ]
+# refactor RecPerExam
+data$RecPerExam <- factor(data$RecPerExam, 
+                          levels = c("b1224", "g24", "less12"), 
+                          labels = c("12-24 mo", "> 24 mo", "< 12 mo"))
 
 save(data, file = "data.rda")

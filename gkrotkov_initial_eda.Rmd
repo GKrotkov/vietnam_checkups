@@ -24,7 +24,7 @@ The data are survey responses from the cities of Hanoi and Hung Yen, Vietnam foc
 
 For two of the key research questions in this report, the variable we will choose as the response variable is `RecPerExam`, a measure of how long it has been since the respondent last had a checkup *without* a catalyzing health event motivating them to go to the doctor. For this variable, 516 of the 2068 respondents had a value of `unknown`. There are many possible explanations for not knowing how long it has been since your most recent personal checkup, some of which cut against each other when it comes to interpreting the analysis. For example, if a respondent reported "unknown" because it has been so long they cannot remember, that has a very different impact on what inferences we should draw about that respondent than if they reported "unknown" because they were unsure if it was 11 months ago or 12 months ago. Since we don't have any additional information about the reasoning behind the `unknown` status, we will remove all respondents who reported `unkown` from the dataset for the remainder of the analysis.
 
-## Interpreting 
+As part of the data cleaning, we removed all respondents whose reason for getting a checkup was because their employer or insurance requested that they do. These semi-compulsory exams are not useful information for getting at the Ministry's fundamental question - how do we drive more voluntary checkups?
 
 # EDA
 
@@ -68,9 +68,12 @@ rownames(tukey_summaries) <- c("Sufficiency", "Attractiveness",
                                "Impressiveness", "Popularity")
 
 knitr::kable(tukey_summaries)
+
+info_cidx <- which(colnames(data) %in% c("SuffInfo", "AttractInfo", 
+                                         "ImpressInfo", "PopularInfo"))
 ```
 
-People tend to rate the Sufficiency, Attractiveness, Impressiveness, and Popularity of information received from checkups at a 3/5 on average, with a similar distribution for each variable. For Attractiveness in particular there appears to be a slight asymmetry (with 2/5 getting nearly as high a rating as 3/5), but in general the four plots all agree on the distribution of the response. We can also see from the table of quantiles that the 5-number summaries for all the variables are identical. Taken together, I am comfortable using Impressiveness as a proxy for all the response variables, since its distribution seems to be the closest to the average of all the other distributions. 
+People tend to rate the Sufficiency, Attractiveness, Impressiveness, and Popularity of information received from checkups at a 3/5 on average, with a similar distribution for each variable. For Attractiveness in particular there appears to be a slight asymmetry (with 2/5 getting nearly as high a rating as 3/5), but in general the four plots all agree on the distribution of the response. We can also see from the table of quantiles that the 5-number summaries for all the variables are identical. 
 
 We will also explore some metrics of checkup quality to get an indicator for how quality current checkups are.
 
@@ -135,11 +138,8 @@ We can see from these plots that it appears that the biggest and most consistent
 ## Impact of Health Issues
 
 ```{r}
-mosaicplot(table(data$RecPerExam, 
-                 data$StabHthStt))
+mosaicplot(table(data$RecPerExam, data$StabHthStt), shade = TRUE, 
+           main = "Health Status and Personal Exams Appear Independent", 
+           xlab = "Recency of Personal Exam", ylab = "Health Status")
 ```
-From the mosaic plot, it appears that health issues among the respondants and their families are not correlated to the response variable.
-
-# Instructions for statistical analyses
-
-Create linear models testing the hypotheses created in the above two parts, including interaction terms for testing the interaction effects. 
+From the mosaic plot, it appears that health issues among the respondants and their families are not correlated to the response variable. Each cross-section box is approximately the size you would expect based on only the marginal probabilities, and we can see from the coloring using Standardized Pearson Residuals that none of the cross sections are significantly greater or lesser than expected. This implies that Health Status and Personal Exam Recency are likely to be independent variables. 
