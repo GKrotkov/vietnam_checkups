@@ -351,7 +351,7 @@ var_num_bic <- which.min(reg.summary$bic)
 plot(reg.summary$bic, xlab = "Number of Variables", ylab = "BIC", type = "l")
 points(var_num_bic, reg.summary$bic[var_num_bic], 
        col = "red", cex = 2, pch = 20)
-coef(regfit.full, var_num_bic)
+# coef(regfit.full, var_num_bic)
 ```
 
 The best model selected by BIC took the form: $ExamRecency = \beta_{waste\_time}X_1 + \beta_{not\_important}X_2 + \beta_{health\_priority}X_3 + \beta_{subsidy}X_4 + \beta_{habit}X_5$. This means that the variables that the BIC model selection process included were: 
@@ -369,7 +369,7 @@ selected_glm <- glm(as.numeric(RecPerExam) ~ Wsttime + NotImp + HthyPriority +
 selected_summ <- summary(selected_glm)
 ```
 
-After fitting the BIC-selected model to identify which variables seem to truly drive regular attendance at checkups, we fit an "estimation model" - another GLM including all the variables retained by BIC selection and also key demographic factors to control variance and improve our estimates of the effect that our key variables have on the likelihood of respondents to regularly attend checkups.
+After fitting the BIC-selected model to identify which variables seem to truly drive regular attendance at checkups, we fit an "estimation model" - another GLM including all the variables retained by BIC selection and also key demographic factors to control variance and improve our estimates of the effect that our key variables have on the likelihood of respondents to regularly attend checkups. We chose to include `BMI`, `Age Group`, `Job Status`, and `Martial Status` as variables we found to be associated with the response based on our EDA.
 
 ```{r}
 # variance-controlled model
@@ -403,22 +403,31 @@ For key metrics of care quality, we can see from Figure 3 that on average patien
 
 ## What drives checkup regularity?
 
-The best model selected by BIC to predict regular checkup attendance retained the following features. 
+The best model selected by BIC to predict regular checkup attendance retained the following features. Also in the table is their estimated coefficient in the estimation model, which included key demographic information to improve our estimates of each coefficient.
 
 Variable | Survey Question | Coefficient in Variance-Controlled Model
 ---------|-----------------|------------
-Waste of Time | "Does the respondent believe check-ups are a waste of time?" | @TODO
-Not Important | "Does the respondent believe check-ups are not urgent or important?" | @TODO
-Health Priority | Does the respondent believe health is a first priority?" | @TODO
-Subsidy | "Are check-ups subsidized by the respondent's employer or community?" | @TODO
-Habit | "Did the respondent get the habit of regular check-ups from their family or employer?" | @TODO
+Waste of Time | "Does the respondent believe check-ups are a waste of time?" | $-0.203$
+Not Important | "Does the respondent believe check-ups are not urgent or important?" | $-0.183$
+Health Priority | Does the respondent believe health is a first priority?" | $0.120$
+Subsidy | "Are check-ups subsidized by the respondent's employer or community?" | $0.062$
+Habit | "Did the respondent get the habit of regular check-ups from their family or employer?" | $0.141$
 
+These results indicate that the most impactful variables on the probability of a respondent regularly getting a checkup are Waste of Time and Not Important, both of which have a negative impact. Health Priority and Habit are strong positive influences, and while Subsidy has a clear effect it is also clearly less than the other effects. 
 
 ## The Effect of Stable Health Status
 
 In figure 12 we can see that the distribution of Health Status and Personal Exam Recency appear to closely follow what we would expect just based on the marginal distribution, indicating it is unlikely that these variables are related. To further our argument that Personal Exam Recency does not appear to depend on Health Status, despite the main effect of Health Status being included in the full model tested using BIC, our model selection procedure did not retain the effect, indicating that it had less predictive power than it was worth as an additional variable. However, to be precise, the Deputy Minister's claim was that the *effect of other factors* was dependent on Health Status. To test this hypothesis, we fit another model that interacted every predictive term with Health Status and compared this model against the BIC-selected model by Deviance reduction. The interaction model reduced the residual deviance from $D_{resid, main} = 504.77$ to $D_{resid, interaction} = 502.37$ but used an additional 5 degrees of freedom. This minor improvement is unconvincing that an unstable Health Status is required before an individual's probability of attending a regular checkup can be influenced. This is reflected in comparing the AICs for the two models - the model with only the main effects has an AIC of $2100.777$, while the model with the interaction terms has an AIC of $2106.77$. This indicates that the interaction terms do not provide enough predictive value to pull their weight in the model.
 
 # Conclusions
+
+Based on our EDA, we find that respondents generally rated the information they received at a checkup as mediocre. Each respondent tends to give very similar scores for each of the types of information, and they tend to rate the information they receive at a little less than 3 out of 5. A direct summary of the distribution can be found in figure 1 and table 1. However, respondents tend to rate the quality of the service received at a checkup somewhat more favorably. These distributions are also highly similar, but respondents tended to rate the empathy provided at their checkups the lowest of the tracked quality attributes, indicating that if the Ministry is to improve service they should focus on the person-to-person interaction provided by staff. 
+
+Based on the results of our prediction model and our estimation model we recommend to the Ministry that they focus their efforts on mitigating the perceptions that a checkup is a waste of time and that it is not important or urgent. These are the two main effects that our models found to be the most impactful, and these can be influenced efficiently and directly by advertising. For example, an advertising campaign might emphasize short wait times and the quickness of a checkup, or emphasize impactful stories about the positive impact of a checkups to communicate their importance. 
+
+The Ministry can also positively impact behavior around checkups by encouraging citizens to make health a first priority and by encouraging families and employers to help individuals get into the habit of a regular checkup. These variables were found to be influential in driving regular checkup attendance, although they may be difficult for the Ministry to combat directly. Community Subsidy also proved to be an effective way to drive checkup attendance, but we suspect that this is too expensive for the Ministry to rely on as a method to improve checkup regularity in the broader population.
+
+We also recommend to the Ministry that they disregard the Deputy Assistant Minister's hypothesis that an unstable health status is a prerequisite for influencing people's behavior around checkups. We found no statistical evidence to support this hypothesis, and in fact found considerably more evidence *against* the proposition, as evidenced by the worse interactive model and Figure 12. 
 
 \newpage
 
