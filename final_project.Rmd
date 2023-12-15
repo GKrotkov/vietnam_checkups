@@ -74,7 +74,7 @@ diagnostics_glm <- function(glm_out, alpha = 0.05){
 
 # Executive Summary
 
-This study aims to examine why people are wary of regular medical check-ups by examining data collected by public health researchers. The end goal was to find how the Vietnamese Ministry of Health can advertise regular check-ups by investigating the causality of avoidance. The analysis focuses on information ratings, checkup quality metrics, and the impact of various beliefs and behaviors on check-up recency. Key findings reveal that individuals consistently rate different information types similarly. Meanwhile, questions regarding what drives voluntary check-ups have a differing array of distributions. BIC model selction is used to build an ideal GLM with five explanitory variables that are all binary responses to the follwoing questions:
+This study aims to examine why people are wary of regular medical check-ups by examining data collected by public health researchers. The end goal was to find how the Vietnamese Ministry of Health can advertise regular check-ups by investigating the causality of avoidance. The analysis focuses on information ratings, checkup quality metrics, and the impact of various beliefs and behaviors on check-up recency. Key findings reveal that individuals consistently rate different information types similarly. Meanwhile, questions regarding what drives voluntary check-ups have a differing array of distributions. BIC model selection is used to build an ideal GLM with five explanatory variables that are all binary responses to the following questions:
 
 - Are check-ups are a waste of time?
 
@@ -86,7 +86,9 @@ This study aims to examine why people are wary of regular medical check-ups by e
 
 - Are regular check-ups a habit picked up from family or an employer?
 
-This model predicts whether someone will get check-up within twelve months. A model with additional variables, added to control variance, did not prove better. Additionally, it was found that a respondant or their family being in good health did not affect one's affinity toward regular check-ups via the model being updated to include this interaction. Ultimately, these insights provide actionable recommendations for health promotion campaigns to encourage regular checkups.
+This model predicts whether someone will get check-up within twelve months. A model with additional variables, added to control variance, did not prove better. Additionally, it was found that a respondent or their family being in good health did not affect one's affinity toward regular check-ups via the model being updated to include this interaction. Ultimately, these insights provide actionable recommendations for health promotion campaigns to encourage regular checkups.
+
+In total we recommend that the Ministry of Health invest in mitigating the perceptions that a checkup is a waste of time and that it is not important or urgent, because those variables were found to be highly influential in turning respondents away from regular checkups. The Ministry can also positively impact behavior around checkups by encouraging citizens to make health a first priority and by encouraging families and employers to help individuals get into the habit of a regular checkup. These variables were found to be influential in driving regular checkup attendance, although they may be difficult for the Ministry to combat directly. Community Subsidy also proved to be an effective way to drive checkup attendance, but we suspect that this is too expensive for the Ministry to rely on as a method to improve checkup regularity in the broader population.
 
 \newpage
 
