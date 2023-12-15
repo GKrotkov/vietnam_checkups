@@ -77,7 +77,7 @@ diagnostics_glm <- function(glm_out, alpha = 0.05){
 
 # Introduction
 
-The Ministry of Health ("Ministry" or "the Ministry") seeks to increase public attendance at regular checkups both to improve public health and save money with preventative medicine. To address this problem, Vietnamese public health researchers conducted a survey to gather information about public attitudes around regular checkups. We will use this data to answer critical questions by the Ministry aimed at increasing the number of people getting annual health exams. 
+The Ministry of Health ("Ministry" or "the Ministry") seeks to increase public attendance at regular checkups both to improve public health and save money with preventative medicine. Specifically, they are seeking advertising recommendations to encourage regular check-ups to those who are shy to the notion. To address this problem, Vietnamese public health researchers conducted a survey to gather information about public attitudes around regular checkups. We will use this data to answer critical questions by the Ministry aimed at increasing the number of people getting annual health exams. 
 
 In particular, we will answer the following questions to guide Ministry policy around regular checkups:
 
