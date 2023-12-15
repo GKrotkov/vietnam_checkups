@@ -189,7 +189,7 @@ rm(quality)
 
 ## What Drives Voluntary Checkups?
 
-Each response includes the several yes or no questions asking what each person feels about check-ups. For example, "Does the respondent believe check-ups are a waste of time?" In several cases,
+Each response includes the several yes or no questions asking what each person feels about check-ups. For example, "Does the respondent believe check-ups are a waste of time?" Figures 9 through 16 show the distributions of the answers to these questions as they relate to `RecPerExam`. We are looking to see that the distribution of each answer differs between yes and no. In figure 10, we can clearly see that being afraid of discovering a new disease causes someone to wait more than twelve months to get a check-up. This is evident from the size difference between each bar representing those who got a check-up in less than twelve months. While some yes or no answers' distributions look more identical then others, we will still proceed with using most of these variables during model selction as we should not ignore nuanced changes via visualizations alone.
 
 ```{r, fig.height = 8, echo=FALSE}
 # Does the respondent believe check-ups are a waste of time?
