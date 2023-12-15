@@ -20,6 +20,55 @@ fig_cap <- function(label){
     fig_n <<- fig_n + 1
     return(cap)
 }
+
+diagnostics_glm <- function(glm_out, alpha = 0.05){
+    require(MASS)
+    p <- length(glm_out$coefficients) - 1  # -1 to account for the intercept
+    n <- length(glm_out$fitted.values)
+    par(mfrow = c(ceiling((6 + p) / 3), 3))
+    # (1) Y-hat vs Y with 0, 1 line and loess fit
+    plot(y = glm_out$fitted.values, x = glm_out$y, 
+         main = "Y-hat vs Y", xlab = "Response", ylab = "Fitted Values")
+    ord <- order(glm_out$y)
+    lines(y = glm_out$fitted.values[ord], x = glm_out$y[ord])
+    abline(0, 1, col = "red", lty = 2)
+    # (2) Standardized deviance resids vs Y-hat w/x = {-2, 0, 2} and loess
+    dev_resid <- resid(glm_out, type = "deviance")
+    stan_dev_resid <- scale(dev_resid)
+    plot(stan_dev_resid ~ glm_out$fitted.values, 
+         main = "Std. Deviance Residuals vs Y-hat", 
+         xlab = "Fitted Values", ylab = "Standardized Deviance Resid")
+    ord <- order(glm_out$fitted.values)
+    lines(y = stan_dev_resid[ord], x = glm_out$fitted.values[ord])
+    abline(h = c(-2, 0, 2), lty = 2)
+    # Studentized deviance residuals vs Y.hat with lines at -(alpha/2n) and 
+    # +(alpha/2n) quantiles of the standard normal distribution
+    plot(x = glm_out$fitted.values, y = dev_resid / sd(dev_resid), 
+         main = "Studentized Deviance Residuals", 
+         xlab = "Fitted Values", ylab = "Studentized Deviance Resid")
+    abline(h = c(qnorm(alpha / (2 * n)), qnorm(1 - alpha / (2 * n))), 
+           col = "red", lty = 2)
+    # leverage values vs fitted, horizontal cut-offs
+    plot(x = glm_out$fitted.values, y = hatvalues(glm_out), 
+         main = "Leverage vs Fitted", 
+         xlab = "Fitted Values", ylab = "Leverage")
+    # Cook's distance plot
+    plot(cooks.distance(glm_out), x = 1:n, 
+         main = "Cook's Distance Plot", 
+         xlab = "Obs #", ylab = "Cook's Distance")
+    abline(h = abs(qf(0.5, p, n - p)), col = "orange", lty = 2)
+    abline(h = 1, col = "red", lty = 2)
+
+    # QQNorm plot of standardized deviance residuals
+    qqnorm(stan_dev_resid)
+    abline(0, 1)
+    # Standardized deviance residuals against each covariate
+    covariates <- names(glm_out$coefficients)[2:p]
+    for (i in 1:p){
+        plot(y = stan_dev_resid, x = glm_out$model[, covariates[i]], 
+             main = paste("Covariate", i, sep = " "))
+    }
+}
 ```
 
 # Executive Summary
@@ -305,14 +354,19 @@ coef(regfit.full, var_num_bic)
 
 ```{r}
 # Final model with BIC
-glm <- glm(as.numeric(RecPerExam) ~ Wsttime + NotImp + HthyPriority + 
-               ComSubsidy + Habit,data=data)
-summary(glm)
-par(mfrow=c(2,2))
-plot(glm)
+selected_glm <- glm(as.numeric(RecPerExam) ~ Wsttime + NotImp + HthyPriority + 
+                        ComSubsidy + Habit,data=data)
+summary(selected_glm)
+diagnostics_glm(selected_glm)
 ```
 
 Furthermore, in order to test the Deputy Assistant Minister's hypothesis, we fit another model that interacted every predictive term with Health Status (and included the main effects) and compared this model against the BIC-selected model using a partial F-Test. This provides a direct comparison of a model that obeys the Deputy Assistant Minister's hypothesis against our baseline model to see if one improves on the other. @TODO do this procedure.
+
+```{r}
+interacted <- glm(as.numeric(RecPerExam) ~ Wsttime + NotImp + HthyPriority + 
+                      ComSubsidy + Habit + Wsttime:,data=data)
+```
+
 
 # Results
 
