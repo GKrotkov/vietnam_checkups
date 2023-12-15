@@ -85,7 +85,7 @@ This study aims to examine why people are wary of regular medical check-ups by e
 
 - Are regular check-ups a habit picked up from family or an employer?
 
-This model predicts whether somepne will get check-up within twelve months. A model with additional variables, added to control variance, did not prove better. Additonally, it was found that a respondant or their family being in good health did not affect one's affinity toward regular check-ups via the model being updated to include this interaction. Ultimately, these insights provide actionable recommendations for health promotion campaigns to encourage regular checkups.
+This model predicts whether someone will get check-up within twelve months. A model with additional variables, added to control variance, did not prove better. Additonally, it was found that a respondant or their family being in good health did not affect one's affinity toward regular check-ups via the model being updated to include this interaction. Ultimately, these insights provide actionable recommendations for health promotion campaigns to encourage regular checkups.
 
 \newpage
 
