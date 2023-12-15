@@ -73,6 +73,20 @@ diagnostics_glm <- function(glm_out, alpha = 0.05){
 
 # Executive Summary
 
+This study aims to examine why people are wary of regular medical check-ups by examining data collected by public health researchers. The end goal was to find how the Vietnamese Ministry of Health can advertise regular check-ups by investigating the causality of avoidance. The analysis focuses on information ratings, checkup quality metrics, and the impact of various beliefs and behaviors on check-up recency. Key findings reveal that individuals consistently rate different information types similarly. Meanwhile, questions regarding what drives voluntary check-ups have a differing array of distributions. BIC model selction is used to build an ideal GLM with five explanitory variables that are all binary responses to the follwoing questions:
+
+- Are check-ups are a waste of time?
+
+- Are check-ups not urgent or important?
+
+- Is health a first priority?
+
+- Are check-ups subsidized by an employer or community?
+
+- Are regular check-ups a habit picked up from family or an employer?
+
+This model predicts whether somepne will get check-up within twelve months. A model with additional variables, added to control variance, did not prove better. Additonally, it was found that a respondant or their family being in good health did not affect one's affinity toward regular check-ups via the model being updated to include this interaction. Ultimately, these insights provide actionable recommendations for health promotion campaigns to encourage regular checkups.
+
 \newpage
 
 # Introduction
