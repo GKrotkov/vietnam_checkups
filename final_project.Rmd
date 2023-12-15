@@ -302,7 +302,9 @@ From the mosaic plot, it appears that health issues among the respondants and th
 
 # Methods
 
-Two GLMs are built. One model is the model-selected-by-BIC one that tells the health ministry which variables drive what they want. The second model then includes many more variables to control variance so that we can tell the ministry *how much* each covariate influences the result. The response variable for both models is `RecPerExam`. The first model that selects variables using BIC initially considers eighteen variables all discussed in the EDA. The model with lowest BIC value is built as a GLM. The second model uses all of the variables from the first model along with additional variables likely to help control variance based on our EDA. Both models will be compared via a partial F-test to determine the best fit for what the Deputy Assistant Minister is looking for.
+Three GLMs are built. One model is a model selected by BIC that tells the health ministry which variables drive what they want. The second model then includes many more variables to control variance so that we can tell the ministry *how much* each covariate influences the result. The third model will be similar to the first in that it contains the same variables selected by BIC, however, the model will also include interactions between all of those variables and `StabHthStt`. Building this model will allow us to test the Deputy Assistant Minister's hypothesis that none of these factors matter much unless you have health issues or know someone in your family with health issues
+
+The response variable for all models is `RecPerExam`. The first model that selects variables using BIC initially considers eighteen variables all discussed in the EDA. The model with lowest BIC value is built as a GLM. The second model uses all of the variables from the first model along with additional variables likely to help control variance based on our EDA. All models will be compared via residual deviance reduction and BIC to determine the best fit for what the Assistant Minister is looking for.
 
 ```{r, echo=FALSE}
 # Convert yes/no variables to binary
