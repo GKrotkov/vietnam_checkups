@@ -26,6 +26,7 @@ diagnostics_glm <- function(glm_out, alpha = 0.05){
     p <- length(glm_out$coefficients) - 1  # -1 to account for the intercept
     n <- length(glm_out$fitted.values)
     par(mfrow = c(ceiling((6 + p) / 3), 3))
+    par(mar = c(2, 1, 2, 1))
     # (1) Y-hat vs Y with 0, 1 line and loess fit
     plot(y = glm_out$fitted.values, x = glm_out$y, 
          main = "Y-hat vs Y", xlab = "Response", ylab = "Fitted Values")
@@ -63,11 +64,11 @@ diagnostics_glm <- function(glm_out, alpha = 0.05){
     qqnorm(stan_dev_resid)
     abline(0, 1)
     # Standardized deviance residuals against each covariate
-    covariates <- names(glm_out$coefficients)[2:p]
-    for (i in 1:p){
-        plot(y = stan_dev_resid, x = glm_out$model[, covariates[i]], 
-             main = paste("Covariate", i, sep = " "))
-    }
+    #covariates <- names(glm_out$coefficients)[2:p]
+    #for (i in 1:(p - 1)){
+    #    plot(y = stan_dev_resid, x = glm_out$model[, covariates[i]], 
+    #         main = paste("Covariate", i, sep = " "))
+    #}
 }
 ```
 
@@ -452,4 +453,6 @@ We also recommend to the Ministry that they disregard the Deputy Assistant Minis
 
 ## Residual Plots: BIC Selected Model
 
-## Residual Plots: Estimation Model
+```{r, fig.height = 7}
+diagnostics_glm(selected_glm)
+```
