@@ -320,6 +320,8 @@ data$Habit <- ifelse(data$Habit=="yes",1,0)
 data$FlwHealth <- ifelse(data$FlwHealth=="yes",1,0)
 ```
 
+In Figure 13 we present the BIC selection optimization. BIC settled on a conservative set of included variables, but judging by the plot it did so correctly. Including each of these variables appears to improve the performance of the model and the steepness of the slope after the minimum indicates that adding more variables meaningfully damages the predictive quality of the selected subset.
+
 ```{r,echo=FALSE}
 # BIC selection
 num_pred_variables <- 18
@@ -348,7 +350,8 @@ regfit.full <- regsubsets(RecPerExam ~
 
 reg.summary <- summary(regfit.full)
 var_num_bic <- which.min(reg.summary$bic)
-plot(reg.summary$bic, xlab = "Number of Variables", ylab = "BIC", type = "l")
+plot(reg.summary$bic, xlab = "Number of Variables", ylab = "BIC", type = "l", 
+     sub = fig_cap("BIC Selection"))
 points(var_num_bic, reg.summary$bic[var_num_bic], 
        col = "red", cex = 2, pch = 20)
 # coef(regfit.full, var_num_bic)
