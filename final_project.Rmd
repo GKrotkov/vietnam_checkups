@@ -352,21 +352,24 @@ points(var_num_bic, reg.summary$bic[var_num_bic],
 coef(regfit.full, var_num_bic)
 ```
 
+The best model selected by BIC took the form: $ExamRecency = \beta_{waste\_time}X_1 + \beta_{not\_important}X_2 + \beta_{health\_priority}X_3 + \beta_{subsidy}X_4 + \beta_{habit}X_5$
+
 ```{r}
 # Final model with BIC
 selected_glm <- glm(as.numeric(RecPerExam) ~ Wsttime + NotImp + HthyPriority + 
                         ComSubsidy + Habit,data=data)
-summary(selected_glm)
-diagnostics_glm(selected_glm)
+selected_summ <- summary(s)
 ```
 
-Furthermore, in order to test the Deputy Assistant Minister's hypothesis, we fit another model that interacted every predictive term with Health Status (and included the main effects) and compared this model against the BIC-selected model using a partial F-Test. This provides a direct comparison of a model that obeys the Deputy Assistant Minister's hypothesis against our baseline model to see if one improves on the other. @TODO do this procedure.
+Furthermore, in order to test the Deputy Assistant Minister's hypothesis, we fit another model that interacted every predictive term with Health Status (and included the main effects) and compared this model against the BIC-selected model based on Deviance reduction This provides a direct comparison of a model that obeys the Deputy Assistant Minister's hypothesis against our baseline model to see if one improves on the other. 
 
 ```{r}
 interacted <- glm(as.numeric(RecPerExam) ~ Wsttime + NotImp + HthyPriority + 
-                      ComSubsidy + Habit + Wsttime:,data=data)
+                      ComSubsidy + Habit + Wsttime:StabHthStt + 
+                      NotImp:StabHthStt + HthyPriority:StabHthStt + 
+                      ComSubsidy:StabHthStt + Habit:StabHthStt,data=data)
+interacted_summ <- summary(interacted)
 ```
-
 
 # Results
 
@@ -380,6 +383,6 @@ For key metrics of care quality, we can see from Figure 3 that on average patien
 
 @TODO write our response to Q2
 
-In figure 12 we can see that the distribution of Health Status and Personal Exam Recency appear to closely follow what we would expect just based on the marginal distribution, indicating it is unlikely that these variables are related. To further our argument that Personal Exam Recency does not appear to depend on Health Status, despite the main effect of Health Status being included in the full model tested using BIC, our model selection procedure did not retain the effect, indicating that it had less predictive power than it was worth as an additional variable. However, to be precise, the Deputy Minister's claim was that the *effect of other factors* was dependent on Health Status. To test this hypothesis, we fit another model that interacted every predictive term with Health Status and compared this model against the BIC-selected model using a partial F-Test. @TODO do this procedure and report results.
+In figure 12 we can see that the distribution of Health Status and Personal Exam Recency appear to closely follow what we would expect just based on the marginal distribution, indicating it is unlikely that these variables are related. To further our argument that Personal Exam Recency does not appear to depend on Health Status, despite the main effect of Health Status being included in the full model tested using BIC, our model selection procedure did not retain the effect, indicating that it had less predictive power than it was worth as an additional variable. However, to be precise, the Deputy Minister's claim was that the *effect of other factors* was dependent on Health Status. To test this hypothesis, we fit another model that interacted every predictive term with Health Status and compared this model against the BIC-selected model by Deviance reduction. The interaction model reduced the residual deviance from $D_{resid, main} = 504.77$ to $D_{resid, interaction} = 502.37$ but used an additional 5 degrees of freedom. This minor improvement is unconvincing that an unstable Health Status is required before an individual's probability of attending a regular checkup can be influenced. This is reflected in comparing the AICs for the two models - the model with only the main effects has an AIC of $2100.777$, while the model with the interaction terms has an AIC of $2106.77$. This indicates that the interaction terms do not provide enough predictive value to pull their weight in the model.
 
 # Conclusions
