@@ -457,7 +457,7 @@ Lastly, none of these methods imply causal effect, no causal inference was perfo
 
 ## Residual Plots: BIC Selected Model
 
-```{r, fig.height = 7}
+```{r}
 diagnostics_glm(selected_glm)
 ```
 
