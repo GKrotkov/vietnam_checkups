@@ -364,8 +364,10 @@ The best model selected by BIC took the form: $ExamRecency = \beta_{waste\_time}
 # Final model with BIC
 selected_glm <- glm(as.numeric(RecPerExam) ~ Wsttime + NotImp + HthyPriority + 
                         ComSubsidy + Habit,data=data)
-selected_summ <- summary(s)
+selected_summ <- summary(selected_glm)
 ```
+
+After fitting the BIC-selected model to identify which variables seem to truly drive regular attendance at checkups, we fit an "estimation model" - another GLM including all the variables retained by BIC selection and also key demographic factors to control variance and improve our estimates of the effect that our key variables have on the likelihood of respondents to regularly attend checkups.
 
 ```{r}
 # variance-controlled model
@@ -377,7 +379,7 @@ estimation_glm <- glm(as.numeric(RecPerExam) ~ Wsttime + NotImp + HthyPriority +
 estimation_summ <- summary(estimation_glm)
 ```
 
-Fianlly, in order to test the Deputy Assistant Minister's hypothesis, we fit another model that interacted every predictive term with Health Status (and included the main effects) and compared this model against the BIC-selected model based on Deviance reduction This provides a direct comparison of a model that obeys the Deputy Assistant Minister's hypothesis against our baseline model to see if one improves on the other. 
+Finally, in order to test the Deputy Assistant Minister's hypothesis, we fit another model that interacted every predictive term with Health Status (and included the main effects) and compared this model against the BIC-selected model based on Deviance reduction This provides a direct comparison of a model that obeys the Deputy Assistant Minister's hypothesis against our baseline model to see if one improves on the other. 
 
 ```{r}
 interacted <- glm(as.numeric(RecPerExam) ~ Wsttime + NotImp + HthyPriority + 
