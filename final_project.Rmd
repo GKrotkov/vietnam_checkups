@@ -352,7 +352,13 @@ points(var_num_bic, reg.summary$bic[var_num_bic],
 coef(regfit.full, var_num_bic)
 ```
 
-The best model selected by BIC took the form: $ExamRecency = \beta_{waste\_time}X_1 + \beta_{not\_important}X_2 + \beta_{health\_priority}X_3 + \beta_{subsidy}X_4 + \beta_{habit}X_5$
+The best model selected by BIC took the form: $ExamRecency = \beta_{waste\_time}X_1 + \beta_{not\_important}X_2 + \beta_{health\_priority}X_3 + \beta_{subsidy}X_4 + \beta_{habit}X_5$. This means that the variables that the BIC model selection process included were: 
+
+1. Does the respondent believe that checkups are a waste of time?
+2. Does the respondent believe that checkups are not urgent or important?
+3. Does the respondent believe that health is a first priority?
+4. Does the respondent's community or employer subsidize checkups?
+5. Does the respondent get the habit of regular checkups from their family or employer?
 
 ```{r}
 # Final model with BIC
