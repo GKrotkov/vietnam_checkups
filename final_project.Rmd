@@ -463,9 +463,12 @@ diagnostics_glm(selected_glm)
 
 The diagnostic plots above for the BIC selected model do not immediately look ideal but can easily be explained by the predictor variables all being binary. Moreover, the expected even distribution of the residuals does not apply in this case. The Leverage vs Fitted plot and the Cook's Distance plot do not reveal any influential points or outliers and instead look exemplary for an ideal result. Additionally, the q-q plot does not appear heavily skewed which gives confidence to the normality assumption.
 
+\newpage
+
 ## Residual Plots: Estimation Model
 
 ```{r}
 diagnostics_glm(estimation_glm)
 ```
 
+These residuals plot show a clearly strong Cook's Distance plot, Leverage plot, and Normal Q-Q plot. The standardized residuals are difficult to interpret because of the categorical nature of many of the predictors, but show an even spread around the predicted values that does not set off any alarms.
